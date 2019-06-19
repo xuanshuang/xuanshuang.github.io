@@ -18,7 +18,7 @@ date: 2019-02-14 00:13:14
 * 安装hexo和hexo-theme-next。跟着[hexo](https://hexo.io/docs/)文档做，很容易就在本地创建懒博客目录。
 * 照着[hexo-theme-next](https://github.com/theme-next/hexo-theme-next)上的配置，简单调整了一下色调。
 * 增加了本文和一篇以前记录的文章。
-* 上传到github。习惯了从github上下载仓库，好久没有本地上传了，也顺道记录一下。首先在git新建一个仓库，然后本地
+* 上传到github。习惯了从github上下载仓库，好久没有本地上传了，也顺道记录一下。首先在git新建一个仓库，然后本地运行下面命令。
 ```
   git init
   git add README.md
@@ -26,3 +26,9 @@ date: 2019-02-14 00:13:14
   git remote add origin https://github.com/wsy5555621/blog.git
   git push -u origin master
 ```
+
+### GitHub Pages
+Github 有两种形式的 page：
+
+* 个人或组织的 page：只能存在一个，master分支，地址为 xxx.github.io
+* 项目page：每个项目可以生成一个，gh-pages分支，地址为 xxx.github.io/projectname
