@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker缓存问题">
+<meta property="og:url" content="http://yoursite.com/2019/02/19/docker-cache-issues/index.html">
+<meta property="og:site_name" content="Surviver">
+<meta property="og:description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-19T07:31:16.289Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker缓存问题">
+<meta name="twitter:description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/02/19/docker-cache-issues/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>docker缓存问题 | Surviver</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Surviver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">For hunting purpose</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/docker-cache-issues/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shen">
+      <meta itemprop="description" content="Daily problem & solution">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Surviver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">docker缓存问题
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-19 10:10:54" itemprop="dateCreated datePublished" datetime="2019-02-19T10:10:54+08:00">2019-02-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-19 15:31:16" itemprop="dateModified" datetime="2019-06-19T15:31:16+08:00">2019-06-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。</p>
+<a id="more"></a>
+
+<h3 id="构建日志"><a href="#构建日志" class="headerlink" title="构建日志"></a>构建日志</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">############ Build Image ############</span><br><span class="line">Sending build context to Docker daemon 4.608 kB</span><br><span class="line">Step 1/6 : FROM nginx:1.13-alpine</span><br><span class="line">1.13-alpine: Pulling from library/nginx</span><br><span class="line">Digest: sha256:9d46fd628d54ebe1633ee3cf0fe2acfcc419cfae541c63056530e39cd5620366</span><br><span class="line">Status: Image is up to date for nginx:1.13-alpine</span><br><span class="line">---&gt; ebe2c7c61055</span><br><span class="line">Step 2/6 : MAINTAINER dopware </span><br><span class="line">---&gt; Using cache</span><br><span class="line">---&gt; 8e9f463cbf07</span><br><span class="line">Step 3/6 : RUN apk update &amp;&amp; apk add --no-cache --no-progress tzdata curl bash</span><br><span class="line">---&gt; Using cache</span><br><span class="line">---&gt; c1ad7aaa5ce3</span><br><span class="line">Step 4/6 : RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime</span><br><span class="line">---&gt; Using cache</span><br><span class="line">---&gt; 81a315cb9403</span><br><span class="line">Step 5/6 : COPY nginx.conf /etc/nginx/nginx.conf</span><br><span class="line">---&gt; Using cache</span><br><span class="line">---&gt; 58a22127d165</span><br><span class="line">Step 6/6 : RUN mkdir -p /home/legov/web2b &amp;&amp; cd /home/legov/web2b &amp;&amp; curl -s http://****/legov-web.tar.gz | tar xz</span><br><span class="line">---&gt; Using cache</span><br><span class="line">---&gt; 74e154a59f7a</span><br><span class="line">Successfully built 74e154a59f7a</span><br><span class="line">Login Succeeded</span><br><span class="line">The push refers to a repository [hub.***.**/legovwebapp/legov-web]</span><br><span class="line">30494122bcfb: Preparing</span><br><span class="line">6604a15fc13c: Preparing</span><br><span class="line">...</span><br><span class="line">87deea508850: Waiting</span><br><span class="line">...</span><br><span class="line">6604a15fc13c: Layer already exists</span><br><span class="line">...</span><br><span class="line">cd7100a72410: Layer already exists</span><br><span class="line">90c4db1d5ef5: Layer already exists</span><br><span class="line">latest: digest: sha256:38ff68d088c1424c644997df77a2ec468192ab8075f10ac23ec35dc0b1d04f20 size: 1989</span><br><span class="line"></span><br><span class="line">############ Build  finished ############</span><br></pre></td></tr></table></figure>
+
+<h2 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h2><p>气势汹汹杀向工具的开发同学，问曰：可以使用<code>docker build --no-cache</code>命令吗？答曰：还不支持，下个版本给你加上！<br>只能寻求它法，然后该同学给我普及了一波缓存知识以助我迈过这个坑。</p>
+<h3 id="什么是Docker命令的缓存"><a href="#什么是Docker命令的缓存" class="headerlink" title="什么是Docker命令的缓存"></a>什么是Docker命令的缓存</h3><p>Docker对每一条命令构建都会产生一个镜像缓存，如果下次构建命中了此次缓存，则就不进行新的构建而是使用缓存镜像。<br>如上面日志中，存在<code>---&gt;Using Cache</code>的地方，就命中并使用了缓存。<br>Docker缓存策略</p>
+<ul>
+<li>从已经在缓存中的父镜像开始，将下一个指令与从该基本镜像导出的所有子镜像进行比较，以查看其中一个是否使用完全相同的指令构建。如果没有，则缓存无效。</li>
+<li>在大多数情况下，只需将Dockerfile中的指令与其中一个子镜像进行比较即可（通过比较是否与上一次执行的指令一致）。但是，某些指令需要一些额外的检查。对于ADD和COPY指令，将检查镜像中文件的内容，并为每个文件计算校验和。在这些校验和中不考虑文件的最后修改和最后访问的时间。在缓存查找期间，将校验和与现有映像中的校验和进行比较。如果文件（如内容和元数据）中有任何变化，则缓存无效。</li>
+<li>除了ADD和COPY命令之外，缓存检查将不会查看容器中的文件来确定缓存匹配。例如，当处理RUN apt-get -y update命令时，不会检查在容器中更新的文件以确定是否存在高速缓存命中，它将只会检查命令字符串是否与之前的一致来判断是否匹配。一旦某一层的缓存无效，所有后续的Dockerfile命令将生成新的镜像，并且高速缓存将不被使用。</li>
+</ul>
+<h3 id="为什么我们会命中缓存呢"><a href="#为什么我们会命中缓存呢" class="headerlink" title="为什么我们会命中缓存呢"></a>为什么我们会命中缓存呢</h3><p>通过检查Dockerfile，我们可以发现命令5是这么写的:</p>
+<ul>
+<li><code>RUN mkdir ***** &amp;&amp; curl *** | tar ***</code> 下载构建产物</li>
+</ul>
+<p>我们更新Web资源，主要通过curl去获取构建产物。这一步写在了最后的RUN命令中，由于之前已经运行过相同的命令了，所以接下来版本的构建中直接命中并使用了缓存。</p>
+<h3 id="怎么禁止使用缓存呢"><a href="#怎么禁止使用缓存呢" class="headerlink" title="怎么禁止使用缓存呢"></a>怎么禁止使用缓存呢</h3><ul>
+<li>在制作镜像的时候，使用<code>docker build --no-cache</code>。但是此处CI/CD系统功能暂不支持。</li>
+<li>上面分析了我们的缓存是因为使用了RUN命令中使用curl来获取构建产物，而这整条RUN被缓存了。我们使用ADD命令，把最后一行改为<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD http://archive.***.**/legovwebapp/legov-web.tar.gz  /home/legov/web2b/</span><br><span class="line">RUN cd /home/legov/web2b &amp;&amp; tar -zxvf legov-web.tar.gz</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="COPY和ADD缓存策略"><a href="#COPY和ADD缓存策略" class="headerlink" title="COPY和ADD缓存策略"></a>COPY和ADD缓存策略</h4><p>判断<code>ADD</code>命令或者<code>COPY</code>命令后紧接的文件是否发生变化，是否延用cache的重要依据。Docker采取的策略是：获取Dockerfile下内容（包括文件的部分inode信息），计算出一个唯一的hash值，若hash值未发生变化，则可以认为文件内容没有发生变化，可以使用 cache 机制；反之亦然。例如，对于命令<code>ADD run.sh /</code>，若当前目录下的<code>run.sh</code>发生了变化，原则上不应该再使用cache，从而将直接导致镜像层文件系统内容的更新。</p>
+<h2 id="Docker相关指令"><a href="#Docker相关指令" class="headerlink" title="Docker相关指令"></a>Docker相关指令</h2><ul>
+<li>WORKDIR-指令用于指定容器的一个目录,容器启动时执行的命令会在该目录下执行,相当于设置了容器的工作目录。</li>
+<li>RUN-RUN命令是创建Docker镜像（image）的步骤，RUN命令对Docker容器（ container）造成的改变是会被反映到创建的Docker镜像上的。一个Dockerfile中可以有许多个RUN命令。</li>
+<li>COPY-<code>COPY &lt;src&gt; &lt;dest&gt;</code>。</li>
+<li>ADD-ADD指令的功能是将主机构建环境（上下文）目录中的文件和目录、以及一个URL标记的文件拷贝到镜像中。认定用不用缓存，文件的构建时间不一样，也被算在不同的指标中。其格式是：<code>ADD 源路径 目标路径</code>。例如，把当前config目录下所有文件拷贝到/config/目录下：<code>ADD config/ /config/</code>。该指令还有解压等强大功能，建议阅读文档。</li>
+<li>CMD-CMD命令是当Docker镜像被启动后Docker容器将会默认执行的命令。一个Dockerfile中只能有一个CMD命令。通过执行docker run $image $other_command启动镜像可以重载CMD命令。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" target="_blank" rel="noopener">Best practices for writing Dockerfiles</a><br><a href="http://guide.daocloud.io/dcs/docker-build-cache-9153988.html" target="_blank" rel="noopener">docker build 的 cache 机制</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/14/hello-world/" rel="next" title="用github.io搭建一个博客">
+                <i class="fa fa-chevron-left"></i> 用github.io搭建一个博客
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">shen</p>
+              <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建日志"><span class="nav-number">1.</span> <span class="nav-text">构建日志</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#分析问题"><span class="nav-number"></span> <span class="nav-text">分析问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Docker命令的缓存"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker命令的缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么我们会命中缓存呢"><span class="nav-number">2.</span> <span class="nav-text">为什么我们会命中缓存呢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么禁止使用缓存呢"><span class="nav-number">3.</span> <span class="nav-text">怎么禁止使用缓存呢</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#COPY和ADD缓存策略"><span class="nav-number">3.1.</span> <span class="nav-text">COPY和ADD缓存策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker相关指令"><span class="nav-number"></span> <span class="nav-text">Docker相关指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shen</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">底漏了</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
