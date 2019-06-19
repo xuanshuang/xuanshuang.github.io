@@ -30,5 +30,7 @@ date: 2019-02-14 00:13:14
 ### GitHub Pages
 Github 有两种形式的 page：
 
-* 个人或组织的 page：只能存在一个，master分支，地址为 xxx.github.io
+* 个人或组织的page：只能存在一个，master分支，地址为 xxx.github.io
 * 项目page：每个项目可以生成一个，gh-pages分支，地址为 xxx.github.io/projectname
+
+为了简单，就直接使用第一种形式了，让master分支作为静态资源分支，develop分支保存blog源文件。

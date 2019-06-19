@@ -78,4 +78,8 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
+  type: git
+  repo: https://github.com/wsy5555621/wsy5555621.github.io.git
+  branch: master
+  name: wsy5555621
+  message: blog publish
