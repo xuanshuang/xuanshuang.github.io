@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Automator添加右键菜单">
+<meta property="og:url" content="http://yoursite.com/2019/05/03/macOS-Automator/index.html">
+<meta property="og:site_name" content="Surviver">
+<meta property="og:description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/post-images/automator.png">
+<meta property="og:updated_time" content="2019-06-20T02:53:19.060Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Automator添加右键菜单">
+<meta name="twitter:description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
+<meta name="twitter:image" content="http://yoursite.com/post-images/automator.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/05/03/macOS-Automator/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用Automator添加右键菜单 | Surviver</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Surviver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">For hunting purpose</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/03/macOS-Automator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shen">
+      <meta itemprop="description" content="Daily problem & solution">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Surviver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Automator添加右键菜单
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-03 20:03:18" itemprop="dateCreated datePublished" datetime="2019-05-03T20:03:18+08:00">2019-05-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-20 10:53:19" itemprop="dateModified" datetime="2019-06-20T10:53:19+08:00">2019-06-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。<br>退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。</p>
+<a id="more"></a>
+
+<h2 id="使用Automator添加右键菜单栏自动生成小程序需要的四个文件"><a href="#使用Automator添加右键菜单栏自动生成小程序需要的四个文件" class="headerlink" title="使用Automator添加右键菜单栏自动生成小程序需要的四个文件"></a>使用Automator添加右键菜单栏自动生成小程序需要的四个文件</h2><h3 id="自动生成文件脚本"><a href="#自动生成文件脚本" class="headerlink" title="自动生成文件脚本"></a>自动生成文件脚本</h3><p>现在用nodeJS做什么开发都很方便，就使用了它来写脚本。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env /Users/shenyu.wang/.nvm/versions/node/v11.13.0/bin/node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; existsSync, writeFileSync, lstatSync &#125; = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; resolve &#125; = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> curPath = process.argv[<span class="number">2</span>];<span class="comment">// process.cwd();</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (curPath &amp;&amp; lstatSync(curPath).isDirectory()) &#123;</span><br><span class="line">  <span class="keyword">const</span> commonName = <span class="string">'index'</span>;</span><br><span class="line">  <span class="keyword">const</span> suffixs = [<span class="string">'acss'</span>, <span class="string">'axml'</span>, <span class="string">'js'</span>, <span class="string">'json'</span>];</span><br><span class="line">  suffixs.forEach(<span class="function"><span class="params">suffix</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> path = resolve(curPath, <span class="string">`<span class="subst">$&#123;commonName&#125;</span>.<span class="subst">$&#123;suffix&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">const</span> content = suffix === <span class="string">'json'</span> ? <span class="built_in">JSON</span>.stringify(&#123; <span class="string">"defaultTitle"</span>: <span class="string">""</span> &#125;, <span class="literal">null</span>, <span class="number">2</span>) : <span class="string">''</span>; </span><br><span class="line">    <span class="keyword">if</span> (existsSync(path)) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(path, <span class="string">'exist'</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(path, <span class="string">'not exist'</span>);</span><br><span class="line">      writeFileSync(path, content);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="把脚本添加到Automator里"><a href="#把脚本添加到Automator里" class="headerlink" title="把脚本添加到Automator里"></a>把脚本添加到Automator里</h3><p><img src="/post-images/automator.png" alt></p>
+<ul>
+<li>进入Automator里，选择实用工具-运行Shell脚本-选择“服务”收到选定的<code>文件夹</code>。</li>
+<li>选择<code>/bin/bash</code>，传递输入选择<code>作为自变量</code>。输入脚本内容<code>~/Desktop/createFiles.js $@</code>。这样，在运行的时候，会传入当前目录路径。</li>
+<li>可以去右键菜单运行了。感觉还是比较麻烦，要到Finder里去右键~~</li>
+<li>shell中的特殊变量:$@表示所有入参，$1表示第一个入参，以此类推。</li>
+<li>参考链接：<a href="https://davidwalsh.name/mac-context-menu" target="_blank" rel="noopener">mac-context-menu</a>、<a href="https://www.jianshu.com/p/9db2fcbbfe6b" target="_blank" rel="noopener">bash/node编写简单脚本文件</a></li>
+</ul>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><ul>
+<li>bash脚本不认识js语法，不认识node关键字<ul>
+<li>先直接在文件开头加了<code>#!/usr/bin/env node</code>，又提示<code>env:node: No such file or directory</code>，天呐，居然找不到node吗，一定是哪里没有设置。</li>
+<li>查了macOS的bash的不同，说是可以用软链接把<code>node</code>链接到node source上。太麻烦了，最后直接把<code>which node</code>获得的node目录，加在最后了。</li>
+<li>加了<code>#!/usr/bin/env</code>后，其实文件名是什么不重要了，比如可以写成*.txt。</li>
+</ul>
+</li>
+<li>第一次运行，提示没有权限<ul>
+<li>chmod +x *.js</li>
+</ul>
+</li>
+</ul>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>过了几天，开发过程中发现小程序内置的组件，好多不能调整样式。官方文档中只有一句<code>a-*</code>开头的类是组件内置类，不建议使用。因为对支付宝小程序Ide有一定的了解了，知道了它是用electron开发的，在Ide预览的时候，是有各种组件的。所以准备去解压Ide文件看看有没有组件库的包。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /Applications/小程序开发者工具.app/Contents</span><br><span class="line">open ./</span><br></pre></td></tr></table></figure>
+
+<p>发现有个<code>Resources</code>文件夹是用来存放代码的，直接拷贝出来。随笔点了点看了看目录结果，我们找的代码都在<code>app</code>目录里。进去发现，很多文件都使用<code>asar</code>工具打包了，所以第一步先把它们都解压出来。</p>
+<h3 id="解压asar"><a href="#解压asar" class="headerlink" title="解压asar"></a>解压asar</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> asar = <span class="built_in">require</span>(<span class="string">'asar'</span>); <span class="comment">// 记得安装</span></span><br><span class="line"><span class="keyword">const</span> &#123; readdirSync, statSync &#125; = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; join &#125; = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> curDirName = __dirname;</span><br><span class="line"><span class="keyword">const</span> files = readdirSync(curDirName);</span><br><span class="line"><span class="keyword">const</span> recurrenceFiles = <span class="keyword">async</span> (files, curDirName) =&gt; &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> file <span class="keyword">of</span> files) &#123;</span><br><span class="line">    <span class="keyword">const</span> fullPath = join(curDirName, file);</span><br><span class="line">    <span class="keyword">const</span> fileStats = statSync(fullPath);</span><br><span class="line">    <span class="keyword">if</span> (fileStats.isDirectory()) &#123;</span><br><span class="line">      recurrenceFiles(readdirSync(fullPath), fullPath);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/\.asar$/</span>.test(fullPath)) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(fullPath);</span><br><span class="line">      <span class="keyword">await</span> asar.extractAll(fullPath, <span class="string">`<span class="subst">$&#123;fullPath.slice(<span class="number">0</span>, fullPath.length - <span class="number">5</span>)&#125;</span>_/`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">recurrenceFiles(files, curDirName);</span><br></pre></td></tr></table></figure>
+
+<h3 id="搜索a"><a href="#搜索a" class="headerlink" title="搜索a-*"></a>搜索a-*</h3><p>解压出来后，都是我们熟悉的包了。直接用vsCode搜索全局（node_modules也不放过），很轻松的就找到了内置组件包<code>af-appx-ide-min.css</code>。
+这里贴一个路径<br><code>/Users/shenyu.wang/Desktop/Resources/app/vol_module_/node_modules/@alipay/tiny-base/src/appx/1.14.2/af-appx.ide.min.css</code></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.a-swiper-indicator</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">bottom</span>: <span class="number">0px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">14px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">  <span class="attribute">-webkit-box-pack</span>: center;</span><br><span class="line">  <span class="attribute">-webkit-justify-content</span>: center;</span><br><span class="line">          <span class="attribute">justify-content</span>: center;</span><br><span class="line">  <span class="attribute">display</span>: -webkit-box;</span><br><span class="line">  <span class="attribute">display</span>: -webkit-flex;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">-webkit-transform</span>: <span class="built_in">translate3d</span>(0, 0, 0);</span><br><span class="line">          <span class="attribute">transform</span>: <span class="built_in">translate3d</span>(0, 0, 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里面可以玩的东西有很多，比如随处可见的<code>React</code>语法、支付宝H5 bridge和小程序Api之间的关系等等，可以捣鼓捣鼓。</p>
+<h3 id="回到开头"><a href="#回到开头" class="headerlink" title="回到开头"></a>回到开头</h3><p>突然想到，electron还是等于开源了呀。下大功夫分析一下代码，我们是可以直接在Ide的代码里实现上面的功能的。等有时间再玩玩吧~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/13/set-up-ssserver-in-windows/" rel="next" title="window server搭建ssserver">
+                <i class="fa fa-chevron-left"></i> window server搭建ssserver
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">shen</p>
+              <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Automator添加右键菜单栏自动生成小程序需要的四个文件"><span class="nav-number">1.</span> <span class="nav-text">使用Automator添加右键菜单栏自动生成小程序需要的四个文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动生成文件脚本"><span class="nav-number">1.1.</span> <span class="nav-text">自动生成文件脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把脚本添加到Automator里"><span class="nav-number">1.2.</span> <span class="nav-text">把脚本添加到Automator里</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遇到的问题"><span class="nav-number">1.3.</span> <span class="nav-text">遇到的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续"><span class="nav-number">2.</span> <span class="nav-text">后续</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解压asar"><span class="nav-number">2.1.</span> <span class="nav-text">解压asar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索a"><span class="nav-number">2.2.</span> <span class="nav-text">搜索a-*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回到开头"><span class="nav-number">2.3.</span> <span class="nav-text">回到开头</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shen</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">底漏了</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -148,7 +148,7 @@ template {
   display: none;
 }
 ::selection {
-  background: #262a30;
+  background: #8959a8;
   color: #fff;
 }
 body {
@@ -1764,7 +1764,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fffc77;
+  background: #a3ffff;
 }
 .feed-link,
 .chat {
