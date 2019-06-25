@@ -96,20 +96,24 @@
 
 
 
-  <meta name="description" content="有人问我，我明明在antd里全局设置了moment的locale，怎么vis里就是不生效啊！决定水一篇。">
+  <meta name="description" content="最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是Session的问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="moment in vis with antd">
-<meta property="og:url" content="http://yoursite.com/2019/03/06/moment-in-vis/index.html">
+<meta property="og:title" content="Session的炒冷饭">
+<meta property="og:url" content="http://yoursite.com/2019/06/23/sth-about-the-session-change/index.html">
 <meta property="og:site_name" content="Surviver">
-<meta property="og:description" content="有人问我，我明明在antd里全局设置了moment的locale，怎么vis里就是不生效啊！决定水一篇。">
+<meta property="og:description" content="最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是Session的问题。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/post-images/vis-in-moment-1.png">
-<meta property="og:image" content="http://yoursite.com/post-images/vis-in-moment-2.png">
-<meta property="og:updated_time" content="2019-06-20T06:52:29.155Z">
+<meta property="og:image" content="http://yoursite.com/post-images/session-0.jpg">
+<meta property="og:image" content="http://yoursite.com/post-images/session-1.jpg">
+<meta property="og:image" content="http://yoursite.com/post-images/session-2.jpg">
+<meta property="og:image" content="http://yoursite.com/post-images/session-3.png">
+<meta property="og:image" content="http://yoursite.com/post-images/session-4.png">
+<meta property="og:image" content="http://yoursite.com/post-images/session-5.png">
+<meta property="og:updated_time" content="2019-06-25T01:05:35.582Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="moment in vis with antd">
-<meta name="twitter:description" content="有人问我，我明明在antd里全局设置了moment的locale，怎么vis里就是不生效啊！决定水一篇。">
-<meta name="twitter:image" content="http://yoursite.com/post-images/vis-in-moment-1.png">
+<meta name="twitter:title" content="Session的炒冷饭">
+<meta name="twitter:description" content="最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是Session的问题。">
+<meta name="twitter:image" content="http://yoursite.com/post-images/session-0.jpg">
 
 
 
@@ -117,7 +121,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/03/06/moment-in-vis/">
+  <link rel="canonical" href="http://yoursite.com/2019/06/23/sth-about-the-session-change/">
 
 
 
@@ -127,7 +131,7 @@
   };
 </script>
 
-  <title>moment in vis with antd | Surviver</title>
+  <title>Session的炒冷饭 | Surviver</title>
   
 
 
@@ -330,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/moment-in-vis/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/23/sth-about-the-session-change/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="shen">
@@ -347,7 +351,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">moment in vis with antd
+          <h1 class="post-title" itemprop="name headline">Session的炒冷饭
 
               
             
@@ -373,7 +377,7 @@
                 
               
 
-              <time title="创建时间：2019-03-06 18:47:14" itemprop="dateCreated datePublished" datetime="2019-03-06T18:47:14+08:00">2019-03-06</time>
+              <time title="创建时间：2019-06-23 15:51:14" itemprop="dateCreated datePublished" datetime="2019-06-23T15:51:14+08:00">2019-06-23</time>
             
 
             
@@ -390,7 +394,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-06-20 14:52:29" itemprop="dateModified" datetime="2019-06-20T14:52:29+08:00">2019-06-20</time>
+                <time title="修改时间：2019-06-25 09:05:35" itemprop="dateModified" datetime="2019-06-25T09:05:35+08:00">2019-06-25</time>
               
             
           </span>
@@ -424,32 +428,30 @@
       
 
       
-        <p>有人问我，我明明在antd里全局设置了moment的locale，怎么vis里就是不生效啊！决定水一篇。</p>
+        <p>最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是<code>Session</code>的问题。</p>
 <a id="more"></a>
 
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>在项目中，遇到明明import了zh-cn，在vis使用zh-cn的locale却总不生效，依旧是英文。<br>代码是这么写的：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> moment <span class="keyword">from</span> <span class="string">'moment'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'moment/locale/zh-cn'</span>; <span class="comment">// 引入中文locale</span></span><br><span class="line"><span class="keyword">import</span> vis <span class="keyword">from</span> <span class="string">'vis'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> groups = <span class="keyword">new</span> vis.DataSet();</span><br><span class="line">groups.add(&#123; <span class="attr">id</span>: <span class="number">0</span>, <span class="attr">content</span>: <span class="string">'执法过程'</span> &#125;);</span><br><span class="line">groups.add(&#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">content</span>: <span class="string">'侦查过程'</span> &#125;);</span><br><span class="line">timeline = <span class="keyword">new</span> vis.Timeline(instance, data, groups, &#123;</span><br><span class="line">  align: <span class="string">'left'</span>,</span><br><span class="line">  groupOrder: <span class="string">'id'</span>,</span><br><span class="line">  width: <span class="string">'100%'</span>,</span><br><span class="line">  zoomMin: <span class="number">604800000</span>,</span><br><span class="line">  locale: <span class="string">'zh-cn'</span>, <span class="comment">// 指定vis使用中文locale</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>此时，antd datepicker组件使用了中文的locale；但是，vis库却仍然倔强的显示英文。<br><img src="/post-images/vis-in-moment-1.png" alt></p>
-<h3 id="为啥子嘞"><a href="#为啥子嘞" class="headerlink" title="为啥子嘞"></a>为啥子嘞</h3><p>通过debugger vis源码发现，vis每次使用的moment都不是第一行import的那个moment；<em>时间过久，忘记了为什么vis使用的moment不是前面import进去的那个了</em>。
-在vis源码中，看到了下面代码：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = (<span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">'undefined'</span>) &amp;&amp; <span class="built_in">window</span>[<span class="string">'moment'</span>] || <span class="built_in">require</span>(<span class="string">'moment'</span>);</span><br></pre></td></tr></table></figure>
-
-<p>并且vis的dist文件还把moment打包进去了。只好在<code>import vis</code>之前加入两行代码来实现需求:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> moment <span class="keyword">from</span> <span class="string">'moment'</span>;</span><br><span class="line"><span class="built_in">window</span>.moment = moment;</span><br></pre></td></tr></table></figure>
-
-<p>￼
-<img src="/post-images/vis-in-moment-2.png" alt></p>
-<h3 id="由此补充的知识点"><a href="#由此补充的知识点" class="headerlink" title="由此补充的知识点"></a>由此补充的知识点</h3><p>在我们的项目中，每次<code>import moment from &#39;moment&#39;;</code>的moment都执行一次<strong>初始化</strong>吗？</p>
+<h2 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h2><h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p>首先，通过<code>Network</code>发现没有异常的请求，但是用户信息的接口返回了空值。查看日志后发现用户是成功登陆的，但是登陆状态在查询用户信息时失效了。检查了node服务也发现oAuth一切正常，猜测是<code>Session</code>的问题。对比登陆种下的cookie和获取用户信息发送的cookie后，发现它们居然不是同一个。是在哪里发生了改变呢？我们打开<code>Network</code>的<code>Set Cookies</code>和<code>Cookies</code>标记，在Chrome 74里我们发现：</p>
+<p><img src="/post-images/session-0.jpg" alt></p>
+<p>天啦噜，<code>Session</code>的<code>cookie</code>的确变化了,但是实在哪里变的呢？<br>接着我尝试使用net-export导出信息，却发现<code>cookie</code>信息都被<strong>145 bytes were stripped</strong>了。。。</p>
+<p><img src="/post-images/session-1.jpg" alt></p>
+<p>搞不清Chrome的规则，尝试在Chrome 70中抓去，发现多了很多cookie相关的内容:</p>
+<p><img src="/post-images/session-2.jpg" alt></p>
+<p>我们发现，有一条请求静态资源<code>hybirdpi.js</code>的请求，状态码是<code>302</code>，并且设置了新的cookie。正是这条新的cookie，导致了<code>Session</code>无效。那又是为什么会设置了新的Cookie呢？<br>我们一开始登陆种下cookie的地方是：<br><img src="/post-images/session-3.png" alt><br>新设置的cookie的地方是：<br><img src="/post-images/session-4.png" alt><br>猛然发现他们端口号不一样。<strong>而Cookie的设置是不区分端口号的</strong>。原来这是两个独立的服务，分别为两个类型的微应用做认证服务，却设置了相同的<code>session key</code>、<code>Path</code>，又不能区分端口，就相互覆盖了。<br>修改好了相关逻辑，提交到线上，又出现了问题。这次是为了抵抗并发压力，线上开启了多实例。而我们的session机制暂时没有支持多实例共享，所以用户信息又乱套了。<br><img src="/post-images/session-5.png" alt></p>
 <blockquote>
-<p>ES6模块的设计思想，是尽量的静态化，使得编译时就能确定模块的依赖关系（这种加载称为“编译时加载”），以及输入和输出的变量。CommonJS（用于服务器）和AMD（用于浏览器）模块，都只能在运行时确定这些东西。可以参考<a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">es6-module</a>。</p>
+<p>在大型网站中，我们的服务器通常不止一台，可能是几十台甚至几百台之多，甚至多个机房都可能在不同的省份，用户发起的HTTP请求通常要经过像Ngnix之类的负载均衡器之后，再路由到具体的服务器上，由于Session默认存储在单机服务器内存中，因此在分布式环境下同一个用户发送的多次HTTP请求可能会先后落到不同的服务器上，导致后面发起的HTTP请求无法拿到之前的HTTP请求存储在服务器中的Session数据，从而使得Session机制在分布式环境下失效，因此在分布式集群中CSRF Token需要存储在Redis之类的公共存储空间。<a href="https://tech.meituan.com/2018/10/11/fe-security-csrf.html" target="_blank" rel="noopener">参考</a></p>
 </blockquote>
+<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>定位的过程简直是吐槽Chrome的过程。出于安全性抑或是其它的考虑，Chrome新版本的devtool中对Cookie的修改做了蛮多限制，比如不能直接在Application中修改<code>Http-only</code>的cookie;某些情况下（如我们今天遇到的）省略<code>Set Cookies</code>的标记。</p>
+<h2 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h2><p>解决问题后，觉得以后设置<code>cookie</code>的时候还是需要谨慎，比如Path不要设为/；cookie的key不同环境要区分等等。顺道复习了一下cookie的知识。</p>
+<ul>
+<li><p><a href="https://stackoverflow.com/questions/1612177/are-http-cookies-port-specific" target="_blank" rel="noopener">cookie不区分端口号</a></p>
 <blockquote>
-<p>AMD 定义了<code>define</code>函数，我们可以使用<code>typeof</code>探测该函数是否已定义。若要更严格一点，可以继续判断<code>define.amd</code>是否有定义。另外，SeaJS也使用了<code>define</code>函数，但和AMD的define又不太一样。<br>对于 CommonJS，可以检查<code>exports</code>或是<code>module.exports</code>是否有定义。使用<code>require</code>引入。</p>
+<p>Cookies do not provide isolation by port. If a cookie is readable by a service running on one port, the cookie is also readable by a service running on another port of the same server. If a cookie is writable by a service on one port, the cookie is also writable by a service running on another port of the same server. For this reason, servers SHOULD NOT both run mutually distrusting services on different ports of the same host and use cookies to store security sensitive information.</p>
 </blockquote>
-<p>这是momont初始化部分的源码：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">global, factory</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">typeof</span> exports === <span class="string">'object'</span> &amp;&amp; <span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span> ? <span class="built_in">module</span>.exports = factory() :</span><br><span class="line">    <span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd ? define(factory) :</span><br><span class="line">    global.moment = factory()</span><br><span class="line">&#125;(<span class="keyword">this</span>, (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">/** moment的初始化代码 **/</span> &#125;)) <span class="comment">// 此处编译后的代码，没有把moment挂在window下面</span></span><br></pre></td></tr></table></figure>
-
+</li>
+<li><p><a href="http://javascript.ruanyifeng.com/bom/cookie.html#toc4" target="_blank" rel="noopener">cookie参考教程</a></p>
+</li>
+</ul>
 
       
     </div>
@@ -480,8 +482,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/19/docker-cache-issues/" rel="next" title="docker缓存问题">
-                <i class="fa fa-chevron-left"></i> docker缓存问题
+              <a href="/2019/05/24/something-ablout-the-nine-valent-hpv/" rel="next" title="两次秒杀九价疫苗">
+                <i class="fa fa-chevron-left"></i> 两次秒杀九价疫苗
               </a>
             
           </div>
@@ -489,10 +491,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/13/set-up-ssserver-in-windows/" rel="prev" title="window server搭建ssserver">
-                window server搭建ssserver <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -603,7 +601,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为啥子嘞"><span class="nav-number">2.</span> <span class="nav-text">为啥子嘞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#由此补充的知识点"><span class="nav-number">3.</span> <span class="nav-text">由此补充的知识点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#定位"><span class="nav-number">1.</span> <span class="nav-text">定位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#过程"><span class="nav-number">1.1.</span> <span class="nav-text">过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#吐槽"><span class="nav-number">2.</span> <span class="nav-text">吐槽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关"><span class="nav-number">3.</span> <span class="nav-text">相关</span></a></li></ol></div>
             
 
           </div>
