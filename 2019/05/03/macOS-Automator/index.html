@@ -72,7 +72,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '7.1.2',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false,"dimmer":false},
     back2top: true,
     back2top_sidebar: false,
     fancybox: false,
@@ -97,6 +97,7 @@
 
 
   <meta name="description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
+<meta name="keywords" content="Mac Automator,nodeJs,支付宝小程序,electron">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Automator添加右键菜单">
 <meta property="og:url" content="http://yoursite.com/2019/05/03/macOS-Automator/index.html">
@@ -104,7 +105,7 @@
 <meta property="og:description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/post-images/automator.png">
-<meta property="og:updated_time" content="2019-06-20T02:53:19.060Z">
+<meta property="og:updated_time" content="2019-06-25T07:28:20.245Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Automator添加右键菜单">
 <meta name="twitter:description" content="最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。">
@@ -174,7 +175,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -227,23 +228,6 @@
     
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
 
   </li>
         
@@ -334,7 +318,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="shen">
       <meta itemprop="description" content="Daily problem & solution">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/post-images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -375,22 +359,6 @@
               <time title="创建时间：2019-05-03 20:03:18" itemprop="dateCreated datePublished" datetime="2019-05-03T20:03:18+08:00">2019-05-03</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-20 10:53:19" itemprop="dateModified" datetime="2019-06-20T10:53:19+08:00">2019-06-20</time>
-              
             
           </span>
 
@@ -482,6 +450,21 @@
 
     <footer class="post-footer">
       
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Mac-Automator/" rel="tag"># Mac Automator</a>
+          
+            <a href="/tags/nodeJs/" rel="tag"># nodeJs</a>
+          
+            <a href="/tags/支付宝小程序/" rel="tag"># 支付宝小程序</a>
+          
+            <a href="/tags/electron/" rel="tag"># electron</a>
+          
+        </div>
+      
 
       
       
@@ -491,8 +474,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/13/set-up-ssserver-in-windows/" rel="next" title="window server搭建ssserver">
-                <i class="fa fa-chevron-left"></i> window server搭建ssserver
+              <a href="/2019/04/19/ajax-302/" rel="next" title="利用Ajax 302 重定向到登录的骚操作">
+                <i class="fa fa-chevron-left"></i> 利用Ajax 302 重定向到登录的骚操作
               </a>
             
           </div>
@@ -561,6 +544,8 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image" src="/post-images/avatar.png" alt="shen">
+            
               <p class="site-author-name" itemprop="name">shen</p>
               <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
           </div>
@@ -572,7 +557,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -581,6 +566,61 @@
               
 
               
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
             </nav>
           
 
@@ -588,6 +628,21 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:shenyu.wang64@gmail.com" title="E-Mail &rarr; mailto:shenyu.wang64@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
           
 
           
