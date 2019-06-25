@@ -25,12 +25,18 @@ date: 2019-06-23 15:51:14
 ![](/post-images/session-3.png)
 新设置的cookie的地方是：
 ![](/post-images/session-4.png)
-猛然发现他们端口号不一样。**而Cookie的设置是不区分端口号的**。原来这是两个独立的服务，分别为两个类型的微应用做认证服务，却设置了相同的`session key`，又不能区分端口，就相互覆盖了。
+猛然发现他们端口号不一样。**而Cookie的设置是不区分端口号的**。原来这是两个独立的服务，分别为两个类型的微应用做认证服务，却设置了相同的`session key`、`Path`，又不能区分端口，就相互覆盖了。
 修改好了相关逻辑，提交到线上，又出现了问题。这次是为了抵抗并发压力，线上开启了多实例。而我们的session机制暂时没有支持多实例共享，所以用户信息又乱套了。
 ![](/post-images/session-5.png)
+
+> 在大型网站中，我们的服务器通常不止一台，可能是几十台甚至几百台之多，甚至多个机房都可能在不同的省份，用户发起的HTTP请求通常要经过像Ngnix之类的负载均衡器之后，再路由到具体的服务器上，由于Session默认存储在单机服务器内存中，因此在分布式环境下同一个用户发送的多次HTTP请求可能会先后落到不同的服务器上，导致后面发起的HTTP请求无法拿到之前的HTTP请求存储在服务器中的Session数据，从而使得Session机制在分布式环境下失效，因此在分布式集群中CSRF Token需要存储在Redis之类的公共存储空间。[参考](https://tech.meituan.com/2018/10/11/fe-security-csrf.html)
 
 ## 吐槽
 定位的过程简直是吐槽Chrome的过程。出于安全性抑或是其它的考虑，Chrome新版本的devtool中对Cookie的修改做了蛮多限制，比如不能直接在Application中修改`Http-only`的cookie;某些情况下（如我们今天遇到的）省略`Set Cookies`的标记。
 
 ## 相关
 解决问题后，觉得以后设置`cookie`的时候还是需要谨慎，比如Path不要设为/；cookie的key不同环境要区分等等。顺道复习了一下cookie的知识。
+* [cookie不区分端口号](https://stackoverflow.com/questions/1612177/are-http-cookies-port-specific)
+> Cookies do not provide isolation by port. If a cookie is readable by a service running on one port, the cookie is also readable by a service running on another port of the same server. If a cookie is writable by a service on one port, the cookie is also writable by a service running on another port of the same server. For this reason, servers SHOULD NOT both run mutually distrusting services on different ports of the same host and use cookies to store security sensitive information.
+
+* [cookie参考教程](http://javascript.ruanyifeng.com/bom/cookie.html#toc4)
