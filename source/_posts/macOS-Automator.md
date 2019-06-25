@@ -1,6 +1,11 @@
 ---
 title: 使用Automator添加右键菜单
 date: 2019-05-03 20:03:18
+tags: 
+- Mac Automator
+- nodeJs
+- 支付宝小程序
+- electron
 ---
 最近在开发支付宝小程序，写每个页面都要创建四个文件，建的不厌其烦，少一个都不行！看小程序Ide也是仿vsCode的，写一个插件来干这事吧！去找了半天，发现此Ide还不支持插件。
 退而求其次，添加一个右键自定义菜单吧。因为使用的MacOS，使用到了Automator。

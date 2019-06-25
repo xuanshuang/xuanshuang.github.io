@@ -1,6 +1,8 @@
 ---
 title: window server搭建ssserver
 date: 2019-03-13 08:18:01
+tags: 
+- shadowsocks
 ---
 公司封了网易云音乐，想着有台公网的ECS，拿来做代理吧。ECS用的window server，捣鼓捣鼓吧。
 

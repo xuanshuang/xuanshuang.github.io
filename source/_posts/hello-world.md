@@ -1,6 +1,10 @@
 ---
 title: 用github.io搭建一个博客
 date: 2019-02-14 00:13:14
+tags: 
+- Hexo
+- next
+- Github Page
 ---
 迫于生计，弄一个博客润色润色苍白的简历。
 <!--more-->

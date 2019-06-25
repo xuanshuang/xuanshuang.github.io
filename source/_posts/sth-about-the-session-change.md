@@ -1,6 +1,10 @@
 ---
 title: Session的炒冷饭
 date: 2019-06-23 15:51:14
+tags: 
+- Session
+- cookie
+- net-export
 ---
 最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是`Session`的问题。
 <!--more-->

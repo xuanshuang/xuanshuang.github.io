@@ -1,6 +1,9 @@
 ---
 title: moment in vis with antd
 date: 2019-03-06 18:47:14
+tags: 
+- moment
+- es6 module
 ---
 有人问我，我明明在antd里全局设置了moment的locale，怎么vis里就是不生效啊！决定水一篇。
 <!--more-->
