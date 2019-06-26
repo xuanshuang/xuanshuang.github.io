@@ -1,5 +1,5 @@
 ---
-title: docker缓存问题
+title: Docker缓存问题
 date: 2019-02-19 10:10:54
 tags: 
 - Docker
@@ -85,6 +85,23 @@ Docker缓存策略
 * COPY-`COPY <src> <dest>`。
 * ADD-ADD指令的功能是将主机构建环境（上下文）目录中的文件和目录、以及一个URL标记的文件拷贝到镜像中。认定用不用缓存，文件的构建时间不一样，也被算在不同的指标中。其格式是：`ADD 源路径 目标路径`。例如，把当前config目录下所有文件拷贝到/config/目录下：`ADD config/ /config/`。该指令还有解压等强大功能，建议阅读文档。
 * CMD-CMD命令是当Docker镜像被启动后Docker容器将会默认执行的命令。一个Dockerfile中只能有一个CMD命令。通过执行docker run $image $other_command启动镜像可以重载CMD命令。
+
+## 本地运行docker镜像
+假设做好的镜像叫docker-dtd。可以用`docker image ls`查看。
+``` bash
+# -v 前面本机目录:映射到docker里面的
+# 创建一个守护态的Docker容器，然后使用docker attach命令进入该容器
+docker run -itd -v ~/Desktop/work/reta-start-kit:/home/project -p 8080:8080 D-dtd /bin/bash
+docker ps
+CONTAINER ID  IMAGE    COMMAND      CREATED         STATUS          PORTS             
+36d8a036bdf6  D-dtd    "/bin/bash"  16 seconds ago  Up 15 seconds   0.0.0.0:8080->8080/tcp
+# 第一种进入镜像bash的方法
+docker attach 36d8a036bdf6
+# 第二种进入镜像bash的方法
+docker exec -it --user root 36d8a036bdf6 /bin/bash // 以root身份运行
+# 退出
+exit
+```
 
 ## 参考
 [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
