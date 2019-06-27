@@ -99,14 +99,14 @@
   <meta name="description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
 <meta name="keywords" content="Docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker缓存问题">
+<meta property="og:title" content="Docker缓存问题">
 <meta property="og:url" content="http://yoursite.com/2019/02/19/docker-cache-issues/index.html">
 <meta property="og:site_name" content="Surviver">
 <meta property="og:description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-25T07:26:46.030Z">
+<meta property="og:updated_time" content="2019-06-26T01:58:58.521Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker缓存问题">
+<meta name="twitter:title" content="Docker缓存问题">
 <meta name="twitter:description" content="最近在使用公司CI/CD工具部署前端镜像时，发现运行的Web都是第一版的内容。通过查看构建日志，发现在打镜像的时候，许多步骤都运用了缓存。">
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>docker缓存问题 | Surviver</title>
+  <title>Docker缓存问题 | Surviver</title>
   
 
 
@@ -328,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">docker缓存问题
+          <h1 class="post-title" itemprop="name headline">Docker缓存问题
 
               
             
@@ -420,6 +420,9 @@
 <li>ADD-ADD指令的功能是将主机构建环境（上下文）目录中的文件和目录、以及一个URL标记的文件拷贝到镜像中。认定用不用缓存，文件的构建时间不一样，也被算在不同的指标中。其格式是：<code>ADD 源路径 目标路径</code>。例如，把当前config目录下所有文件拷贝到/config/目录下：<code>ADD config/ /config/</code>。该指令还有解压等强大功能，建议阅读文档。</li>
 <li>CMD-CMD命令是当Docker镜像被启动后Docker容器将会默认执行的命令。一个Dockerfile中只能有一个CMD命令。通过执行docker run $image $other_command启动镜像可以重载CMD命令。</li>
 </ul>
+<h2 id="本地运行docker镜像"><a href="#本地运行docker镜像" class="headerlink" title="本地运行docker镜像"></a>本地运行docker镜像</h2><p>假设做好的镜像叫docker-dtd。可以用<code>docker image ls</code>查看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -v 前面本机目录:映射到docker里面的</span></span><br><span class="line"><span class="comment"># 创建一个守护态的Docker容器，然后使用docker attach命令进入该容器</span></span><br><span class="line">docker run -itd -v ~/Desktop/work/reta-start-kit:/home/project -p 8080:8080 D-dtd /bin/bash</span><br><span class="line">docker ps</span><br><span class="line">CONTAINER ID  IMAGE    COMMAND      CREATED         STATUS          PORTS             </span><br><span class="line">36d8a036bdf6  D-dtd    <span class="string">"/bin/bash"</span>  16 seconds ago  Up 15 seconds   0.0.0.0:8080-&gt;8080/tcp</span><br><span class="line"><span class="comment"># 第一种进入镜像bash的方法</span></span><br><span class="line">docker attach 36d8a036bdf6</span><br><span class="line"><span class="comment"># 第二种进入镜像bash的方法</span></span><br><span class="line">docker <span class="built_in">exec</span> -it --user root 36d8a036bdf6 /bin/bash // 以root身份运行</span><br><span class="line"><span class="comment"># 退出</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" target="_blank" rel="noopener">Best practices for writing Dockerfiles</a><br><a href="http://guide.daocloud.io/dcs/docker-build-cache-9153988.html" target="_blank" rel="noopener">docker build 的 cache 机制</a></p>
 
       
@@ -655,7 +658,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建日志"><span class="nav-number">1.</span> <span class="nav-text">构建日志</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#分析问题"><span class="nav-number"></span> <span class="nav-text">分析问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Docker命令的缓存"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker命令的缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么我们会命中缓存呢"><span class="nav-number">2.</span> <span class="nav-text">为什么我们会命中缓存呢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么禁止使用缓存呢"><span class="nav-number">3.</span> <span class="nav-text">怎么禁止使用缓存呢</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#COPY和ADD缓存策略"><span class="nav-number">3.1.</span> <span class="nav-text">COPY和ADD缓存策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker相关指令"><span class="nav-number"></span> <span class="nav-text">Docker相关指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建日志"><span class="nav-number">1.</span> <span class="nav-text">构建日志</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#分析问题"><span class="nav-number"></span> <span class="nav-text">分析问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Docker命令的缓存"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker命令的缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么我们会命中缓存呢"><span class="nav-number">2.</span> <span class="nav-text">为什么我们会命中缓存呢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么禁止使用缓存呢"><span class="nav-number">3.</span> <span class="nav-text">怎么禁止使用缓存呢</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#COPY和ADD缓存策略"><span class="nav-number">3.1.</span> <span class="nav-text">COPY和ADD缓存策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker相关指令"><span class="nav-number"></span> <span class="nav-text">Docker相关指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地运行docker镜像"><span class="nav-number"></span> <span class="nav-text">本地运行docker镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></li></div>
             
 
           </div>

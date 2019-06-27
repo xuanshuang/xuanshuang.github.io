@@ -110,7 +110,8 @@
 <meta property="og:image" content="http://yoursite.com/post-images/session-3.png">
 <meta property="og:image" content="http://yoursite.com/post-images/session-4.png">
 <meta property="og:image" content="http://yoursite.com/post-images/session-5.png">
-<meta property="og:updated_time" content="2019-06-25T07:44:40.838Z">
+<meta property="og:image" content="http://yoursite.com/post-images/session-6.png">
+<meta property="og:updated_time" content="2019-06-27T07:14:23.671Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Session的炒冷饭">
 <meta name="twitter:description" content="最近App的同学反应需要鉴权的H5在首次打开的时候，都拿不到用户详情。刷新或关闭H5后再次打开，才恢复正常。经过定位是Session的问题。">
@@ -403,13 +404,15 @@
 <p><img src="/post-images/session-0.jpg" alt></p>
 <p>天啦噜，<code>Session</code>的<code>cookie</code>的确变化了,但是实在哪里变的呢？<br>接着我尝试使用net-export导出信息，却发现<code>cookie</code>信息都被<strong>145 bytes were stripped</strong>了。。。</p>
 <p><img src="/post-images/session-1.jpg" alt></p>
+<p><em>UPDATE</em>此处冤枉Chrome了，在记录log时，忘记勾选<code>Include raw bytes (will include cookies and credentials)</code>选项了。</p>
 <p>搞不清Chrome的规则，尝试在Chrome 70中抓去，发现多了很多cookie相关的内容:</p>
 <p><img src="/post-images/session-2.jpg" alt></p>
 <p>我们发现，有一条请求静态资源<code>hybirdpi.js</code>的请求，状态码是<code>302</code>，并且设置了新的cookie。正是这条新的cookie，导致了<code>Session</code>无效。那又是为什么会设置了新的Cookie呢？<br>我们一开始登陆种下cookie的地方是：<br><img src="/post-images/session-3.png" alt><br>新设置的cookie的地方是：<br><img src="/post-images/session-4.png" alt><br>猛然发现他们端口号不一样。<strong>而Cookie的设置是不区分端口号的</strong>。原来这是两个独立的服务，分别为两个类型的微应用做认证服务，却设置了相同的<code>session key</code>、<code>Path</code>，又不能区分端口，就相互覆盖了。<br>修改好了相关逻辑，提交到线上，又出现了问题。这次是为了抵抗并发压力，线上开启了多实例。而我们的session机制暂时没有支持多实例共享，所以用户信息又乱套了。<br><img src="/post-images/session-5.png" alt></p>
 <blockquote>
 <p>在大型网站中，我们的服务器通常不止一台，可能是几十台甚至几百台之多，甚至多个机房都可能在不同的省份，用户发起的HTTP请求通常要经过像Ngnix之类的负载均衡器之后，再路由到具体的服务器上，由于Session默认存储在单机服务器内存中，因此在分布式环境下同一个用户发送的多次HTTP请求可能会先后落到不同的服务器上，导致后面发起的HTTP请求无法拿到之前的HTTP请求存储在服务器中的Session数据，从而使得Session机制在分布式环境下失效，因此在分布式集群中CSRF Token需要存储在Redis之类的公共存储空间。<a href="https://tech.meituan.com/2018/10/11/fe-security-csrf.html" target="_blank" rel="noopener">参考</a></p>
 </blockquote>
-<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>定位的过程简直是吐槽Chrome的过程。出于安全性抑或是其它的考虑，Chrome新版本的devtool中对Cookie的修改做了蛮多限制，比如不能直接在Application中修改<code>Http-only</code>的cookie;某些情况下（如我们今天遇到的）省略<code>Set Cookies</code>的标记。</p>
+<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>定位的过程简直是吐槽Chrome的过程。出于安全性抑或是其它的考虑，Chrome新版本的devtool中对Cookie的修改做了蛮多限制，比如不能直接在Application中修改<code>Http-only</code>的cookie;某些情况下（如我们今天遇到的）省略<code>Set Cookies</code>的标记。<br>这时候，我们尽量使用<code>chrome://net-export/</code>来进行调试，记得勾选选项噢！</p>
+<p><img src="/post-images/session-6.png" alt></p>
 <h2 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h2><p>解决问题后，觉得以后设置<code>cookie</code>的时候还是需要谨慎，比如Path不要设为/；cookie的key不同环境要区分等等。顺道复习了一下cookie的知识。</p>
 <ul>
 <li><p><a href="https://stackoverflow.com/questions/1612177/are-http-cookies-port-specific" target="_blank" rel="noopener">cookie不区分端口号</a></p>
