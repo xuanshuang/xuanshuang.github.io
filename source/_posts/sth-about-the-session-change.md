@@ -20,6 +20,9 @@ tags:
 
 ![](/post-images/session-1.jpg)
 
+*UPDATE*此处冤枉Chrome了，在记录log时，忘记勾选`Include raw bytes (will include cookies and credentials)`选项了。
+
+
 搞不清Chrome的规则，尝试在Chrome 70中抓去，发现多了很多cookie相关的内容:
 
 ![](/post-images/session-2.jpg)
@@ -37,6 +40,9 @@ tags:
 
 ## 吐槽
 定位的过程简直是吐槽Chrome的过程。出于安全性抑或是其它的考虑，Chrome新版本的devtool中对Cookie的修改做了蛮多限制，比如不能直接在Application中修改`Http-only`的cookie;某些情况下（如我们今天遇到的）省略`Set Cookies`的标记。
+这时候，我们尽量使用`chrome://net-export/`来进行调试，记得勾选选项噢！
+
+![](/post-images/session-6.png)
 
 ## 相关
 解决问题后，觉得以后设置`cookie`的时候还是需要谨慎，比如Path不要设为/；cookie的key不同环境要区分等等。顺道复习了一下cookie的知识。
