@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近要用Vue来进行开发，想到前一段时间投入了支付宝小程序的开发，使用到了久违的双向绑定语法，这次又开始使用Vue，居然还有点小亲切。从写点什么下手呢？想着想着，移动端H5怎么也得有个轮播图吧，于是立马就打开了新浪首页，盯着它的轮播，抄袭了起来。">
+<meta name="keywords" content="Vue,Swiper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Vue实现高仿低配Swiper">
+<meta property="og:url" content="http://yoursite.com/2019/07/07/a-swiper-with-vue/index.html">
+<meta property="og:site_name" content="Surviver">
+<meta property="og:description" content="最近要用Vue来进行开发，想到前一段时间投入了支付宝小程序的开发，使用到了久违的双向绑定语法，这次又开始使用Vue，居然还有点小亲切。从写点什么下手呢？想着想着，移动端H5怎么也得有个轮播图吧，于是立马就打开了新浪首页，盯着它的轮播，抄袭了起来。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-22T09:15:34.745Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Vue实现高仿低配Swiper">
+<meta name="twitter:description" content="最近要用Vue来进行开发，想到前一段时间投入了支付宝小程序的开发，使用到了久违的双向绑定语法，这次又开始使用Vue，居然还有点小亲切。从写点什么下手呢？想着想着，移动端H5怎么也得有个轮播图吧，于是立马就打开了新浪首页，盯着它的轮播，抄袭了起来。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/07/a-swiper-with-vue/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用Vue实现高仿低配Swiper | Surviver</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Surviver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">For hunting purpose</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/07/a-swiper-with-vue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shen">
+      <meta itemprop="description" content="Daily problem & solution">
+      <meta itemprop="image" content="/post-images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Surviver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Vue实现高仿低配Swiper
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-07 13:14:15" itemprop="dateCreated datePublished" datetime="2019-07-07T13:14:15+08:00">2019-07-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近要用Vue来进行开发，想到前一段时间投入了支付宝小程序的开发，使用到了久违的双向绑定语法，这次又开始使用Vue，居然还有点小亲切。<br>从写点什么下手呢？想着想着，移动端H5怎么也得有个轮播图吧，于是立马就打开了新浪首页，盯着它的轮播，抄袭了起来。</p>
+<a id="more"></a>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>新浪首页的轮播用了大名鼎鼎的Swiper组件，支持左右滑、无限轮播等特性。对着devTool观察了一整个轮播后，对它的实现方式有一定的了解了。</p>
+<ul>
+<li>通过CSS translate属性，把每一帧按顺序排在同一行中，设置定时器改变当前显示的帧</li>
+<li>处理用户滑动的事件</li>
+<li>在首帧前增加一帧尾帧的备份，在尾帧后加一帧首帧，以达到无限轮播的效果</li>
+</ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"swiper"</span> <span class="attr">v-if</span>=<span class="string">"data.length"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">:class</span>=<span class="string">"swiperContainerCls"</span> <span class="attr">:style</span>=<span class="string">"swiperContainerSty"</span> <span class="attr">ref</span>=<span class="string">"swiperDiv"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span></span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"swiper-item"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-for</span>=<span class="string">"(item, i) in data"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:key</span>=<span class="string">"i"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:style</span>=<span class="string">"&#123; transform: `translate3D($&#123;i * 100&#125;%, 0, 0)`, backgroundImage: `url($&#123;item.serviceImg&#125;)` &#125;"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">click</span>=<span class="string">"handleBannerClick(item.url)"</span></span></span><br><span class="line"><span class="tag">      /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"data.length &gt; 1"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"swiper-item"</span> <span class="attr">:style</span>=<span class="string">"&#123; transform: `translate3D($&#123;data.length * 100&#125;%, 0, 0)`, backgroundImage: `url($&#123;data[0].serviceImg&#125;)` &#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"swiper-item"</span> <span class="attr">:style</span>=<span class="string">"&#123; transform: `translate3D(-100%, 0, 0)`, backgroundImage: `url($&#123;data[data.length - 1].serviceImg&#125;)` &#125;"</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">"showIndicator &amp;&amp; data.length &gt; 1"</span> <span class="attr">class</span>=<span class="string">"swiper-indicator"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-for</span>=<span class="string">"(item, index) in data"</span> <span class="attr">:class</span>=<span class="string">"`swiper-dot $&#123;isActived(index)&#125;`"</span> <span class="attr">:key</span>=<span class="string">"`$&#123;index&#125;-dot`"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> &#123; addEvent, removeEvent, getTouch, getTouchIdentifier &#125; <span class="keyword">from</span> <span class="string">'../utils'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript"><span class="keyword">const</span> MINIMUM_SLIDE_INTERVAL = <span class="number">300</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">  name: <span class="string">'swiper'</span>,</span></span><br><span class="line">  props: &#123;</span><br><span class="line">    data: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">Array</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> [];</span></span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    showIndicator: &#123;</span><br><span class="line"><span class="javascript">      type: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="literal">true</span></span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  data() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line">      touchStartPointX: 0,</span><br><span class="line">      touchStartTime: 0,</span><br><span class="line">      deltaX: 0,</span><br><span class="line">      touchIdentifier: -1,</span><br><span class="line">      currentTranslateX: 0,</span><br><span class="line"><span class="javascript">      isInTouchMoveAction: <span class="literal">false</span>,</span></span><br><span class="line"><span class="javascript">      intervalId: <span class="literal">undefined</span>,</span></span><br><span class="line"><span class="javascript">      isClickEvent: <span class="literal">true</span>,</span></span><br><span class="line"><span class="javascript">      isDuplicateMove: <span class="literal">false</span>,</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;&#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    swiperContainerSty() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; isInTouchMoveAction, currentTranslateX, deltaX &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> translateX = isInTouchMoveAction ? currentTranslateX + deltaX : currentTranslateX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> (&#123;</span></span><br><span class="line"><span class="javascript">        transform: <span class="string">`translateX(<span class="subst">$&#123;translateX&#125;</span>px)`</span></span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    swiperContainerCls() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; isInTouchMoveAction &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="string">`swiper-container <span class="subst">$&#123;isInTouchMoveAction ? <span class="string">''</span> : <span class="string">'swiper-container-transition'</span> &#125;</span>`</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleBannerClick(url) &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;,</span><br><span class="line">    onTransitionend(e) &#123;</span><br><span class="line"><span class="javascript">      removeEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'transitionend'</span>, <span class="keyword">this</span>.onTransitionend);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; perWidth, data, isDuplicateMove, currentTranslateX, isNeedOnceMore &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (isDuplicateMove) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 在重复的swiper滚动动画完成后，立刻改变到其真实的位置，且这时候不要运用动画</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.isInTouchMoveAction = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> minTranslateX = <span class="keyword">this</span>.getMinTranslateX();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (currentTranslateX &gt; <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.currentTranslateX = minTranslateX;</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (currentTranslateX &lt; minTranslateX) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.currentTranslateX = <span class="number">0</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.isDuplicateMove = <span class="literal">false</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.setSwiperInterval();</span></span><br><span class="line">    &#125;,</span><br><span class="line">    isActived(index) &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; currentTranslateX, perWidth, data &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> activeItem = !perWidth ? <span class="number">0</span> : currentTranslateX / perWidth;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 当前位置是最后一张swiper的镜像</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (activeItem === <span class="number">1</span>) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> index === data.length - <span class="number">1</span> ? <span class="string">'swiper-dot-active'</span> : <span class="string">''</span>;</span></span><br><span class="line"><span class="javascript">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Math</span>.abs(activeItem) === data.length) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 当前位置是第一张swiper的镜像</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> index === <span class="number">0</span> ? <span class="string">'swiper-dot-active'</span> : <span class="string">''</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="built_in">Math</span>.abs(activeItem) === index ? <span class="string">'swiper-dot-active'</span> : <span class="string">''</span>;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onTouchStart(e) &#123;</span><br><span class="line"><span class="javascript">      <span class="comment">// e.preventDefault();</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; currentTranslateX, perWidth, data &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (currentTranslateX === perWidth || currentTranslateX + perWidth * data.length === <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="keyword">this</span>.intervalId) &#123;</span></span><br><span class="line"><span class="javascript">        clearInterval(<span class="keyword">this</span>.intervalId);</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> touchIdentifier = getTouchIdentifier(e);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; clientX &#125; = getTouch(e, touchIdentifier);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchIdentifier = touchIdentifier;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchStartPointX = clientX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchStartTime = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.isInTouchMoveAction = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.intervalId = <span class="literal">undefined</span>;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onTouchMove(e) &#123;</span><br><span class="line">      e.preventDefault();</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; currentTranslateX, perWidth, isInTouchMoveAction &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (!isInTouchMoveAction) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; clientX &#125; = getTouch(e, <span class="keyword">this</span>.touchIdentifier);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> deltaX = clientX - <span class="keyword">this</span>.touchStartPointX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="keyword">this</span>.touchStartPointX + deltaX &gt; perWidth) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.deltaX = deltaX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.isClickEvent = <span class="literal">false</span>;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onTouchEnd(e) &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123;</span></span><br><span class="line">        touchIdentifier,</span><br><span class="line">        touchStartPointX,</span><br><span class="line">        currentTranslateX,</span><br><span class="line">        perWidth,</span><br><span class="line">        touchStartTime,</span><br><span class="line">        isClickEvent,</span><br><span class="line">        isInTouchMoveAction</span><br><span class="line"><span class="javascript">      &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (!isInTouchMoveAction) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (isClickEvent) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.resetState();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.setSwiperInterval();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line">      e.preventDefault();</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> touchEndTime = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; clientX &#125; = getTouch(e, touchIdentifier);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> deltaX = clientX - touchStartPointX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> isSlide2Left = deltaX &lt; <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> offset = <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 快速滑动，默认滑一屏</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (touchEndTime - touchStartTime &lt; MINIMUM_SLIDE_INTERVAL) &#123;</span></span><br><span class="line">        offset = isSlide2Left ? -perWidth : perWidth;</span><br><span class="line"><span class="javascript">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (deltaX) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> passBy = deltaX / perWidth;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> up = <span class="built_in">Math</span>.ceil(passBy);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> down = <span class="built_in">Math</span>.floor(passBy);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (up - passBy &gt; passBy - down) &#123;</span></span><br><span class="line">          offset = down * perWidth;</span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line">          offset = up * perWidth;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> nextTranslateX = offset + currentTranslateX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> dataLen = <span class="keyword">this</span>.data.length;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="number">0</span> &lt; nextTranslateX &lt;= perWidth || nextTranslateX &lt; <span class="keyword">this</span>.getMinTranslateX()) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.isDuplicateMove = <span class="literal">true</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.currentTranslateX = nextTranslateX;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.resetState();</span></span><br><span class="line"><span class="javascript">      addEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'transitionend'</span>, <span class="keyword">this</span>.onTransitionend);</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="javascript">    <span class="comment">// 不算重复swiper的最大负偏移</span></span></span><br><span class="line">    getMinTranslateX() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; perWidth, data &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> - perWidth * (data.length - <span class="number">1</span>);</span></span><br><span class="line">    &#125;,</span><br><span class="line">    resetState() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.deltaX = <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchStartPointX = <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchIdentifier = <span class="number">-1</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.isInTouchMoveAction = <span class="literal">false</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.touchStartTime = <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.isClickEvent = <span class="literal">true</span>;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    getAutoPlayTranslateX() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (!<span class="keyword">this</span>.$refs.swiperDiv) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="comment">// 总是自右向左滑动</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; currentTranslateX, isInTouchMoveAction, data, perWidth &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (isInTouchMoveAction) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.isInTouchMoveAction = <span class="literal">false</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> length = data.length;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> nextIndex = <span class="built_in">Math</span>.abs(currentTranslateX) / perWidth + <span class="number">1</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.currentTranslateX = - nextIndex * perWidth;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 为了实现无缝滚动效果</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (nextIndex === length) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.isDuplicateMove = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">        addEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'transitionend'</span>, <span class="keyword">this</span>.onTransitionend);</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    cacNextIndex() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> &#123; currentTranslateX, data, perWidth &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (currentTranslateX &gt; <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.currentTranslateX = -perWidth * (data.length - <span class="number">1</span>);</span></span><br><span class="line"><span class="javascript">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (currentTranslateX &lt; -perWidth * (data.length - <span class="number">1</span>)) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.currentTranslateX = <span class="number">0</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    setSwiperInterval() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="keyword">this</span>.intervalId) &#123;</span></span><br><span class="line"><span class="javascript">        clearInterval(<span class="keyword">this</span>.intervalId);</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.intervalId = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.getAutoPlayTranslateX();</span></span><br><span class="line">      &#125;, 3000);</span><br><span class="line">    &#125;,</span><br><span class="line">    handleResize() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> newPerWidth = <span class="keyword">this</span>.getPerWidth();</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (newPerWidth !== <span class="keyword">this</span>.perWidth) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.perWidth = newPerWidth;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.currentTranslateX = <span class="number">0</span>;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    getPerWidth() &#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">this</span>.$refs.swiperDiv.querySelector(<span class="string">'.swiper-item'</span>).offsetWidth || screen.width - <span class="number">32</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">if</span> (<span class="keyword">this</span>.$refs.swiperDiv &amp;&amp; <span class="keyword">this</span>.data.length &gt; <span class="number">1</span>) &#123;</span></span><br><span class="line"><span class="javascript">      addEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchstart'</span>, <span class="keyword">this</span>.onTouchStart);</span></span><br><span class="line"><span class="javascript">      addEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchmove'</span>, <span class="keyword">this</span>.onTouchMove);</span></span><br><span class="line"><span class="javascript">      addEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchend'</span>, <span class="keyword">this</span>.onTouchEnd);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.perWidth = <span class="keyword">this</span>.getPerWidth();</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.setSwiperInterval();</span></span><br><span class="line"><span class="javascript">      <span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="keyword">this</span>.handleResize);</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  beforeDestroy() &#123;</span><br><span class="line"><span class="javascript">    <span class="keyword">if</span> (<span class="keyword">this</span>.$refs.swiperDiv) &#123;</span></span><br><span class="line"><span class="javascript">      removeEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchstart'</span>, <span class="keyword">this</span>.onTouchStart);</span></span><br><span class="line"><span class="javascript">      removeEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchmove'</span>, <span class="keyword">this</span>.onTouchMove);</span></span><br><span class="line"><span class="javascript">      removeEvent(<span class="keyword">this</span>.$refs.swiperDiv, <span class="string">'touchend'</span>, <span class="keyword">this</span>.onTouchEnd);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="keyword">this</span>.intervalId) &#123;</span></span><br><span class="line"><span class="javascript">        clearInterval(<span class="keyword">this</span>.intervalId);</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="javascript">      <span class="built_in">window</span>.removeEventListener(<span class="string">'resize'</span>, <span class="keyword">this</span>.handleResize);</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">'less'</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line">@swiper-height: 100px;</span><br><span class="line"></span><br><span class="line"><span class="css"><span class="selector-class">.swiper</span> &#123;</span></span><br><span class="line">  position: relative;</span><br><span class="line">  display: block;</span><br><span class="line">  visibility: visible;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">  width: 100%;</span><br><span class="line"><span class="css">  <span class="selector-tag">height</span>: @<span class="keyword">swiper</span>-<span class="keyword">height</span>;</span></span><br><span class="line">  box-sizing: border-box;</span><br><span class="line"></span><br><span class="line">  &amp;-container &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    left: 0;</span><br><span class="line">    top: 0;</span><br><span class="line">    right: 0;</span><br><span class="line">    bottom: 0;</span><br><span class="line">    </span><br><span class="line">    &amp;-transition &#123;</span><br><span class="line"><span class="css">      <span class="selector-tag">transition</span>: <span class="selector-tag">all</span> <span class="selector-class">.5s</span> <span class="selector-tag">ease</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &amp;-item &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    will-change: auto;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 100%;</span><br><span class="line">    box-sizing: border-box;</span><br><span class="line">    border-radius: 4px;</span><br><span class="line">    overflow: hidden;</span><br><span class="line">    background-size: cover;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &amp;-indicator &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    bottom: 0px;</span><br><span class="line">    height: 14px;</span><br><span class="line">    width: 100%;</span><br><span class="line">    text-align: center;</span><br><span class="line">    justify-content: center;</span><br><span class="line">    display: -webkit-box;</span><br><span class="line">    display: -webkit-flex;</span><br><span class="line">    display: flex;</span><br><span class="line">    transform: translate3d(0, 0, 0);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &amp;-dot &#123;</span><br><span class="line">    display: inline-block;</span><br><span class="line">    zoom: 1;</span><br><span class="line">    width: 4px;</span><br><span class="line">    height: 3px;</span><br><span class="line">    margin: 0 2px;</span><br><span class="line"><span class="css">    <span class="selector-tag">background</span>: <span class="selector-id">#e8e8e8</span>;</span></span><br><span class="line"><span class="css">    <span class="selector-tag">transition</span>: <span class="selector-tag">width</span> <span class="selector-class">.5s</span>;</span></span><br><span class="line"></span><br><span class="line">    &amp;-active &#123;</span><br><span class="line">      width: 11px;</span><br><span class="line"><span class="css">      <span class="selector-tag">background</span>: <span class="selector-id">#fff</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="完工"><a href="#完工" class="headerlink" title="完工"></a>完工</h3><p>自己的Swiper实现的很粗糙，也没有市面上的已有的组件那般功能强大，不过作为一个练手的小东西，还是很实在啦。<br>写的过程中没有最后贴代码这么顺利，遇到了许多问题：比如怎么区分点击和滑动；事件的绑定与解绑；vue的computed、method有啥不一样；镜像的那两帧什么时机变成真实的两帧等等。最后好赖都解决了，也算顺利完成。<br>PS：现在的日子，啥都写一点，就比如小程序和Vue，也不知道上手的顺序是不是搞错了。是该先写小程序呢，还是先写Vue呢？</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/Swiper/" rel="tag"># Swiper</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/23/sth-about-the-session-change/" rel="next" title="Session的炒冷饭">
+                <i class="fa fa-chevron-left"></i> Session的炒冷饭
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/post-images/avatar.png" alt="shen">
+            
+              <p class="site-author-name" itemprop="name">shen</p>
+              <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:shenyu.wang64@gmail.com" title="E-Mail &rarr; mailto:shenyu.wang64@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完工"><span class="nav-number">3.</span> <span class="nav-text">完工</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shen</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">底漏了</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
