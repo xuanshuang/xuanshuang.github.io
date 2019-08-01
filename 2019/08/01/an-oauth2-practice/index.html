@@ -96,22 +96,18 @@
 
 
 
-  <meta name="description" content="最近要做一个服务限流的功能，前后端约定通过状态码429来区分。后端同学采用了拦截器的方案，在调试过程中遇到了跨域的问题，借此复习下OPTIONS。">
-<meta name="keywords" content="跨域,OPTIONS,429">
+  <meta name="description" content="最近使用了YApi来管理接口相关的内容，但是每个人都要手动注册。大家觉得麻烦，就需要对接一下Auth。">
+<meta name="keywords" content="OAuth2,backend">
 <meta property="og:type" content="article">
-<meta property="og:title" content="复习下OPTIONS">
-<meta property="og:url" content="http://yoursite.com/2019/04/06/options/index.html">
+<meta property="og:title" content="一次对接oauth2实践">
+<meta property="og:url" content="http://yoursite.com/2019/08/01/an-oauth2-practice/index.html">
 <meta property="og:site_name" content="Surviver">
-<meta property="og:description" content="最近要做一个服务限流的功能，前后端约定通过状态码429来区分。后端同学采用了拦截器的方案，在调试过程中遇到了跨域的问题，借此复习下OPTIONS。">
+<meta property="og:description" content="最近使用了YApi来管理接口相关的内容，但是每个人都要手动注册。大家觉得麻烦，就需要对接一下Auth。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/post-images/options-1.png">
-<meta property="og:image" content="http://yoursite.com/post-images/options-2.png">
-<meta property="og:image" content="http://yoursite.com/post-images/options-3.png">
-<meta property="og:updated_time" content="2019-06-25T08:31:12.019Z">
+<meta property="og:updated_time" content="2019-08-01T07:34:55.960Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="复习下OPTIONS">
-<meta name="twitter:description" content="最近要做一个服务限流的功能，前后端约定通过状态码429来区分。后端同学采用了拦截器的方案，在调试过程中遇到了跨域的问题，借此复习下OPTIONS。">
-<meta name="twitter:image" content="http://yoursite.com/post-images/options-1.png">
+<meta name="twitter:title" content="一次对接oauth2实践">
+<meta name="twitter:description" content="最近使用了YApi来管理接口相关的内容，但是每个人都要手动注册。大家觉得麻烦，就需要对接一下Auth。">
 
 
 
@@ -119,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/04/06/options/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/01/an-oauth2-practice/">
 
 
 
@@ -129,7 +125,7 @@
   };
 </script>
 
-  <title>复习下OPTIONS | Surviver</title>
+  <title>一次对接oauth2实践 | Surviver</title>
   
 
 
@@ -315,7 +311,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/06/options/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/01/an-oauth2-practice/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="shen">
@@ -332,7 +328,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">复习下OPTIONS
+          <h1 class="post-title" itemprop="name headline">一次对接oauth2实践
 
               
             
@@ -358,7 +354,7 @@
                 
               
 
-              <time title="创建时间：2019-04-06 20:19:18" itemprop="dateCreated datePublished" datetime="2019-04-06T20:19:18+08:00">2019-04-06</time>
+              <time title="创建时间：2019-08-01 11:11:11" itemprop="dateCreated datePublished" datetime="2019-08-01T11:11:11+08:00">2019-08-01</time>
             
 
             
@@ -393,30 +389,98 @@
       
 
       
-        <p>最近要做一个服务限流的功能，前后端约定通过状态码<code>429</code>来区分。后端同学采用了拦截器的方案，在调试过程中遇到了跨域的问题，借此复习下<code>OPTIONS</code>。</p>
+        <p>最近使用了YApi来管理接口相关的内容，但是每个人都要手动注册。大家觉得麻烦，就需要对接一下Auth。</p>
 <a id="more"></a>
 
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>实际调试中发现：</p>
-<ol>
-<li>正常请求可以通过跨域<br><img src="/post-images/options-1.png" alt></li>
-<li><code>429</code>的请求通过了<code>OPTIONS</code>检查，真实请求发生跨域报错。<br><img src="/post-images/options-2.png" alt></li>
-</ol>
-<p>￼原来后端同学忘记限流拦截器中返回<code>CORS header</code>了。<br><img src="/post-images/options-3.png" alt><br>￼</p>
-<h3 id="OPTIONS"><a href="#OPTIONS" class="headerlink" title="OPTIONS"></a>OPTIONS</h3><p>解决了问题后，发现CORS的知识有一些忘记了。为什么通过<code>OPTIONS</code>请求后，仍然需要<code>CORS</code>的header呢？<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="noopener">参考</a></p>
+<h3 id="OAuth2"><a href="#OAuth2" class="headerlink" title="OAuth2"></a>OAuth2</h3><p>准备采用OAuth2.0来进行对接。其中使用授权码来进行接入的流程如下：</p>
 <ul>
-<li><code>OPTIONS</code>是预检查请求</li>
-<li>通过后发起正常请求，也需要Access-Control-Allow-Origin</li>
+<li>从我们的应用请求认证服务器获取code。这时认证服务器会转跳到他们的用户登陆页面，提醒你是否确认登陆并授权给我们的应用。</li>
+<li>认证服务器通过了认证，回调到我们在上一步提供的回调地址。认证服务器会在回调地址上拼接code和state参数，给我们去换取token。</li>
+<li>我们的服务器拿到code和state后，向认证服务器请求获得此次授权的用户token。</li>
+<li>拿到token后，我们就可以向资源服务器（可能就是认证服务器）请求我们需要的资源了。在这里，就是用户信息。</li>
 </ul>
-<blockquote>
-<p>非简单请求是那种对服务器有特殊要求的请求，比如请求方法是PUT或DELETE，或者Content-Type字段的类型是application/json。非简单请求的CORS请求，会在正式通信之前，增加一次HTTP查询请求，称为”预检”请求（preflight）。浏览器先询问服务器，当前网页所在的域名是否在服务器的许可名单之中，以及可以使用哪些HTTP动词和头信息字段。只有得到肯定答复，浏览器才会发出正式的XMLHttpRequest请求，否则就报错。<br>“预检”请求用的请求方法是OPTIONS，表示这个请求是用来询问的。头信息里面，关键字段是<code>Origin</code>，表示请求来自哪个源。<br>除了Origin字段，”预检”请求的头信息包括两个特殊字段。<br>（1）Access-Control-Request-Method<br>该字段是必须的，用来列出浏览器的CORS请求会用到哪些HTTP方法，上例是PUT。<br>（2）Access-Control-Request-Headers<br>该字段是一个逗号分隔的字符串，指定浏览器CORS请求会额外发送的头信息字段。</p>
-</blockquote>
-<blockquote>
-<p>服务器收到”预检”请求以后，检查了Origin、Access-Control-Request-Method和Access-Control-Request-Headers字段以后，确认允许跨源请求，就可以做出回应。</p>
-</blockquote>
-<blockquote>
-<p>一旦服务器通过了”预检”请求，以后每次浏览器正常的CORS请求，就都跟简单请求一样，会有一个Origin头信息字段。服务器的回应，也都会有一个<code>Access-Control-Allow-Origin</code>头信息字段(<strong>这里就是上面发送错误的原因</strong>)。如果服务器否定了”预检”请求，会返回一个正常的HTTP回应，但是没有任何CORS相关的头信息字段。这时，浏览器就会认定，服务器不同意预检请求，因此触发一个错误，被XMLHttpRequest对象的onerror回调函数捕获。</p>
-</blockquote>
-<h3 id="其他限流方案"><a href="#其他限流方案" class="headerlink" title="其他限流方案"></a>其他限流方案</h3><p><a href="https://www.cnblogs.com/biglittleant/p/8979915.html" target="_blank" rel="noopener">nginx限流</a></p>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>那么，基于这个流程，我们需要认证服务器提供三个接口：</p>
+<ol>
+<li><p>获取code（登陆）接口。<code>GET TheirHost/api/base/oauth/authorizationCode</code>。它有如下几个query参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">response_type=code</td>
+<td align="left">标明这是采用授权码方式</td>
+</tr>
+<tr>
+<td align="left">client_id=client_id</td>
+<td align="left">我们应用在认证服务器注册的标识</td>
+</tr>
+<tr>
+<td align="left">redirect_uri=redirect_uri</td>
+<td align="left">回调Url。授权成功后，回调到我们自己的后端</td>
+</tr>
+<tr>
+<td align="left">scope</td>
+<td align="left">需要授权的范围</td>
+</tr>
+<tr>
+<td align="left">state</td>
+<td align="left">可用来CSRF防御</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>获取token接口。<code>POST TheirHost/api/base/oauth/token</code>。它有如下query参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">grant_type=authorization_code</td>
+<td align="left">标明这是采用授权码方式来换取code</td>
+</tr>
+<tr>
+<td align="left">client_id=client_id</td>
+<td align="left">我们应用在认证服务器注册的标识</td>
+</tr>
+<tr>
+<td align="left">redirect_uri=redirect_uri</td>
+<td align="left">回调Url。必须与上面转跳时给的一致，和code一起被用来确认身份。</td>
+</tr>
+<tr>
+<td align="left">code=code</td>
+<td align="left">上一步中返回的code</td>
+</tr>
+<tr>
+<td align="left">client_secret=client_secret</td>
+<td align="left">我们应用在认证服务器上注册的密钥</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<p>它的标准返回值如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Cache-Control: no-store</span><br><span class="line">Pragma: no-cache</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"access_token"</span>:<span class="string">"MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"</span>,</span><br><span class="line">  <span class="attr">"token_type"</span>:<span class="string">"bearer"</span>,</span><br><span class="line">  <span class="attr">"expires_in"</span>:<span class="number">3600</span>,</span><br><span class="line">  <span class="attr">"refresh_token"</span>:<span class="string">"IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk"</span>,</span><br><span class="line">  <span class="attr">"scope"</span>:<span class="string">"create delete"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>根据token获取用户信息。 <code>POST TheirHost/api/base/oauth/user?access_token=xxxxx</code>。这个接口是根据业务需要来的。</li>
+</ol>
+<p>在我们应用的后端服务中，主要实现下面两个业务逻辑：</p>
+<ul>
+<li><p>为前端提供一个回调地址：<code>GET OurHost/oauth/callback</code>。这个地址就是我们传给redirect_uri的。我们从query中拿到认证服务器回传给我们的code和state。然后，调用获取token的接口，获取到<code>access_token</code>。最后回调到我们的登陆接口（如下）。</p>
+</li>
+<li><p>使用token登陆的接口：<code>GET OurHost/login_by_token</code>。这个算作是具体业务场景的代码。在我们的应用中，我们通过<code>access_token</code>去请求资源服务器（认证服务器）的用户信息，然后根据这些信息自动为用户创建账号，并转跳到我们的应用页面中去。</p>
+</li>
+</ul>
+<h3 id="实际"><a href="#实际" class="headerlink" title="实际"></a>实际</h3><p>说了这么多，实际对接可不是一帆风顺。深刻感受到没有标准的AUTH，只有流水的实现。。。<br>这里，在认证服务器转跳回我们的回调地址时，首次登陆并不是服务端直接返回302，它做了一个前端转跳，导致我们的回调地址还要区分这个请求是不是异步请求；同时，还引入了跨域问题。</p>
+<p>在解决跨域问题时，发现预检请求不会被controller捕获到。原来，我只注册了GET方法，并没有注册OPTIONS方法。虽然以前也记录过预检请求也是一种请求，但是第一次操作还是忘记了注册。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"><span class="comment">// 注册中间件处理OPTIONS</span></span><br><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (ctx.method === <span class="string">'OPTIONS'</span>) &#123;</span><br><span class="line">    ctx.set(<span class="string">'Access-Control-Allow-Origin'</span>, ctx.get(<span class="string">'Origin'</span>));</span><br><span class="line">    ctx.set(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, X-XSRF-TOKEN'</span>);</span><br><span class="line">    ctx.set(<span class="string">'Access-Control-Allow-Methods'</span>, ctx.method);</span><br><span class="line">    ctx.set(<span class="string">'Access-Control-Allow-Credentials'</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">return</span> ctx.body = <span class="number">200</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">await</span> next();</span><br><span class="line">&#125;);</span><br><span class="line">app.use(router.routes()); <span class="comment">// 按给的方法注册，GET方法只注册GET的路由</span></span><br><span class="line">app.use(router.allowedMethods()); <span class="comment">// 处理一些未注册方法，一开始进了这里</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// controller中</span></span><br><span class="line"><span class="keyword">async</span> oauth2Callback(ctx) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> isAjax = ctx.get(<span class="string">'X-Requested-With'</span>) === <span class="string">'XMLHttpRequest'</span>;</span><br><span class="line">    <span class="keyword">if</span> (isAjax) &#123;</span><br><span class="line">      setCORSHeader(ctx);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>别忘了再回调请求中，判断出是异步请求，也要同时返回CORS请求头。这可以用<code>X-Requested-With</code>请求头判断。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type" target="_blank" rel="noopener">What is the OAuth 2.0 Authorization Code Grant Type?</a></p>
 
       
     </div>
@@ -443,11 +507,9 @@
         
         <div class="post-tags">
           
-            <a href="/tags/跨域/" rel="tag"># 跨域</a>
+            <a href="/tags/OAuth2/" rel="tag"># OAuth2</a>
           
-            <a href="/tags/OPTIONS/" rel="tag"># OPTIONS</a>
-          
-            <a href="/tags/429/" rel="tag"># 429</a>
+            <a href="/tags/backend/" rel="tag"># backend</a>
           
         </div>
       
@@ -460,8 +522,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/13/set-up-ssserver-in-windows/" rel="next" title="window server搭建ssserver">
-                <i class="fa fa-chevron-left"></i> window server搭建ssserver
+              <a href="/2019/07/07/a-swiper-with-vue/" rel="next" title="使用Vue实现高仿低配Swiper">
+                <i class="fa fa-chevron-left"></i> 使用Vue实现高仿低配Swiper
               </a>
             
           </div>
@@ -469,10 +531,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/19/ajax-302/" rel="prev" title="利用Ajax 302 重定向到登录的骚操作">
-                利用Ajax 302 重定向到登录的骚操作 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -663,7 +721,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OPTIONS"><span class="nav-number">2.</span> <span class="nav-text">OPTIONS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他限流方案"><span class="nav-number">3.</span> <span class="nav-text">其他限流方案</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OAuth2"><span class="nav-number">1.</span> <span class="nav-text">OAuth2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程"><span class="nav-number">2.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际"><span class="nav-number">3.</span> <span class="nav-text">实际</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
