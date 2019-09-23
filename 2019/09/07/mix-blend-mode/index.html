@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近在给大数据部门做可视化，有一个动画因为赶时间，决定采用GIF动图来实现。然后设计师居然给不出透明背景的GIF，需要我们自己采用CSS来处理，即CSS中的mix-blend-mode属性。">
+<meta name="keywords" content="css,mix-blend-mode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS中的mix-blend-mode">
+<meta property="og:url" content="http://yoursite.com/2019/09/07/mix-blend-mode/index.html">
+<meta property="og:site_name" content="Surviver">
+<meta property="og:description" content="最近在给大数据部门做可视化，有一个动画因为赶时间，决定采用GIF动图来实现。然后设计师居然给不出透明背景的GIF，需要我们自己采用CSS来处理，即CSS中的mix-blend-mode属性。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/post-images/blend-0.png">
+<meta property="og:image" content="http://yoursite.com/post-images/blend-1.png">
+<meta property="og:image" content="http://yoursite.com/post-images/blend-2.png">
+<meta property="og:updated_time" content="2019-09-23T11:03:50.425Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS中的mix-blend-mode">
+<meta name="twitter:description" content="最近在给大数据部门做可视化，有一个动画因为赶时间，决定采用GIF动图来实现。然后设计师居然给不出透明背景的GIF，需要我们自己采用CSS来处理，即CSS中的mix-blend-mode属性。">
+<meta name="twitter:image" content="http://yoursite.com/post-images/blend-0.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/09/07/mix-blend-mode/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>CSS中的mix-blend-mode | Surviver</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Surviver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">For hunting purpose</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/07/mix-blend-mode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shen">
+      <meta itemprop="description" content="Daily problem & solution">
+      <meta itemprop="image" content="/post-images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Surviver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CSS中的mix-blend-mode
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-07 23:03:33" itemprop="dateCreated datePublished" datetime="2019-09-07T23:03:33+08:00">2019-09-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在给大数据部门做可视化，有一个动画因为赶时间，决定采用GIF动图来实现。然后设计师居然给不出透明背景的GIF，需要我们自己采用CSS来处理，即CSS中的mix-blend-mode属性。</p>
+<a id="more"></a>
+
+<h3 id="什么是mix-blend-mode"><a href="#什么是mix-blend-mode" class="headerlink" title="什么是mix-blend-mode"></a>什么是mix-blend-mode</h3><blockquote>
+<p>The mix-blend-mode property specifies how the content of an element blends with its background and the content of its direct parent. Elements on overlapping layers will blend with those beneath it. In this case, it’s important to mention the isolation property. It stops the elements with mix-blend-property from blending with the backdrop.</p>
+</blockquote>
+<ul>
+<li><p>这个属性用来指定元素的内容如何与其背景和其直接父级的内容混合。</p>
+</li>
+<li><p>这个属性可以用在background属性和img标签上。</p>
+</li>
+<li><p>还有一个类似的属性background-blend-mode。</p>
+</li>
+<li><p>背景不能是transparent，透明色，这样黑色背景合成还是黑色背景。</p>
+</li>
+<li><p>background-color初始值：rgba(0, 0, 0, 0), transparent。</p>
+</li>
+</ul>
+<h3 id="为什么我失效了"><a href="#为什么我失效了" class="headerlink" title="为什么我失效了"></a>为什么我失效了</h3><p>实际操作中，我使用了这条CSS规则，却发现一点效果也没有。随即询问了教我使用这个属性的同学，他说他可以，不清楚我为什么不行，并且发给我一个Demo。在对比了Demo和我的代码后，发现应用了这条规则的元素，它的祖先中有一个position定位为fixed的元素。做了一些对比，如下：</p>
+<ol>
+<li>根元素position为fixed，自己为fixed，无效，黑色背景存在<br><img src="/post-images/blend-0.png" alt></li>
+<li>根元素position为absolute，自己为fixed，有效，黑色背景被去除<br><img src="/post-images/blend-1.png" alt><br>一开始以为是fixed属性创建了一个新的layer，在这个layer中，我没有设置任何背景颜色，才导致了属性的失效。后来发现，absolute定位也创建了新的layer。<br><img src="/post-images/blend-2.png" alt></li>
+</ol>
+<p>这时候，又发现如果在它的任意一个父节点设置一个不透明的背景颜色，无论是fixed还是absolute定位，都能去除GIF背景中的黑色。搞得我很迷惑。</p>
+<!-- ![](/post-images/blend-3.png)
+![](/post-images/blend-4.png) -->
+
+<p>想了想，猜测失效的原因是还是与定位的方式有关，不同的定位改变了此元素父元素的内容。因为我这里包裹了很多div，而这些div的背景颜色都是默认的透明色。在fixed定位时，这个元素的父级是以window的内容来进行合成的，而在这里我们并没有什么有颜色的内容。透明色与黑色（我们的GIF背景是黑色的）混合，仍然是黑色的背景了。当我们使用absolute定位，存在一个不为static定位的父元素，则这个被混合元素的父元素是有内容的。</p>
+<p>归结起来，mix-blend-mode是与它<strong>直接父级的内容进行混合的</strong>。</p>
+<h3 id="慎用"><a href="#慎用" class="headerlink" title="慎用"></a>慎用</h3><p>费了点力气，搞清楚了为什么属性失效，并在Chrome等主流器中达到了想要等效果。但是，<strong>这个属性在IE、Edge是完全无效的</strong>。
+这里记录一个使用canvas来polyfill的方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> URLreg = <span class="regexp">/(?:\(['|"]?)(.*?)(?:['|"]?\))/</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'DOMContentLoaded'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> supportsBackgroundBlendMode = <span class="built_in">window</span>.getComputedStyle(<span class="built_in">document</span>.body).backgroundBlendMode;</span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> supportsBackgroundBlendMode == <span class="string">'undefined'</span>) &#123;  </span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> maybe check for Canvas composite support?</span></span><br><span class="line">    createBlendedBackgrounds();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createBlendedBackgrounds</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> els = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.blend-multiply'</span>);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; els.length; i++) &#123;</span><br><span class="line">    <span class="keyword">var</span> el = els[i];</span><br><span class="line">    processElement(el);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">processElement</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> style = <span class="built_in">window</span>.getComputedStyle(el);</span><br><span class="line">  <span class="keyword">var</span> backgroundImageURL = URLreg.exec(style.backgroundImage)[<span class="number">1</span>];</span><br><span class="line">  <span class="keyword">var</span> backgroundColor = style.backgroundColor;</span><br><span class="line">  createBlendedBackgroundImageFromURLAndColor(backgroundImageURL, backgroundColor, <span class="function"><span class="keyword">function</span>(<span class="params">imgData</span>) </span>&#123;</span><br><span class="line">    el.style.backgroundImage = <span class="string">'url('</span> + imgData + <span class="string">')'</span>;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createBlendedBackgroundImageFromURLAndColor</span>(<span class="params">url, color, callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> img = <span class="built_in">document</span>.createElement(<span class="string">'img'</span>);</span><br><span class="line">  img.src = url;</span><br><span class="line">  img.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> canvas = <span class="built_in">document</span>.createElement(<span class="string">'canvas'</span>);</span><br><span class="line">    canvas.width = <span class="keyword">this</span>.naturalWidth;</span><br><span class="line">    canvas.height = <span class="keyword">this</span>.naturalHeight;</span><br><span class="line">    <span class="keyword">var</span> context = canvas.getContext(<span class="string">'2d'</span>);</span><br><span class="line">    <span class="comment">// IE9是支持CanvasRenderingContext2D API: globalCompositeOperation的</span></span><br><span class="line">    context.globalCompositeOperation = <span class="string">'multiply'</span></span><br><span class="line">    context.drawImage(<span class="keyword">this</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    context.fillStyle = color;</span><br><span class="line">    context.fillRect(<span class="number">0</span>, <span class="number">0</span>, canvas.width, canvas.height);</span><br><span class="line">    <span class="keyword">var</span> data = canvas.toDataURL(<span class="string">'image/jpeg'</span>);</span><br><span class="line">    callback(data);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本想偷点懒，没想到花的时间也不少。。。记录一下以防忘记。</p>
+<p><a href="https://kolosek.com/css-blend-mode/" target="_blank" rel="noopener">css-blend-mode</a><br><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation" target="_blank" rel="noopener">globalCompositeOperation</a><br><a href="https://stackoverflow.com/questions/32613896/how-to-hack-unsupported-mix-blend-mode-css-property" target="_blank" rel="noopener">how-to-hack-unsupported-mix-blend-mode-css-property</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/css/" rel="tag"># css</a>
+          
+            <a href="/tags/mix-blend-mode/" rel="tag"># mix-blend-mode</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/01/an-oauth2-practice/" rel="next" title="一次对接oauth2实践">
+                <i class="fa fa-chevron-left"></i> 一次对接oauth2实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/post-images/avatar.png" alt="shen">
+            
+              <p class="site-author-name" itemprop="name">shen</p>
+              <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:shenyu.wang64@gmail.com" title="E-Mail &rarr; mailto:shenyu.wang64@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是mix-blend-mode"><span class="nav-number">1.</span> <span class="nav-text">什么是mix-blend-mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么我失效了"><span class="nav-number">2.</span> <span class="nav-text">为什么我失效了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#慎用"><span class="nav-number">3.</span> <span class="nav-text">慎用</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shen</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">底漏了</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
