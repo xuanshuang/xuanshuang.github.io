@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="如今容器技术已经十分成熟了，前后端或运维的日常都离不开它。平时老是用公司线上CI/CD平台来完成部署，突然有了一台隔离环境需要徒手敲命令，却发现自己把命令行的操作指令遗忘了七七八八。这里记录一下docker的常用指令，特别是在单台环境部署多个服务时，docker-compose的内容。">
+<meta name="keywords" content="docker,docker-compose,mongo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="容器指令备忘">
+<meta property="og:url" content="http://yoursite.com/2019/11/04/docker-check-memory/index.html">
+<meta property="og:site_name" content="Surviver">
+<meta property="og:description" content="如今容器技术已经十分成熟了，前后端或运维的日常都离不开它。平时老是用公司线上CI/CD平台来完成部署，突然有了一台隔离环境需要徒手敲命令，却发现自己把命令行的操作指令遗忘了七七八八。这里记录一下docker的常用指令，特别是在单台环境部署多个服务时，docker-compose的内容。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-04T09:04:50.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="容器指令备忘">
+<meta name="twitter:description" content="如今容器技术已经十分成熟了，前后端或运维的日常都离不开它。平时老是用公司线上CI/CD平台来完成部署，突然有了一台隔离环境需要徒手敲命令，却发现自己把命令行的操作指令遗忘了七七八八。这里记录一下docker的常用指令，特别是在单台环境部署多个服务时，docker-compose的内容。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/11/04/docker-check-memory/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>容器指令备忘 | Surviver</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Surviver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">For hunting purpose</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/04/docker-check-memory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="shen">
+      <meta itemprop="description" content="Daily problem & solution">
+      <meta itemprop="image" content="/post-images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Surviver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">容器指令备忘
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-04 12:50:15" itemprop="dateCreated datePublished" datetime="2019-11-04T12:50:15+08:00">2019-11-04</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如今容器技术已经十分成熟了，前后端或运维的日常都离不开它。平时老是用公司线上CI/CD平台来完成部署，突然有了一台隔离环境需要徒手敲命令，却发现自己把命令行的操作指令遗忘了七七八八。这里记录一下docker的常用指令，特别是在单台环境部署多个服务时，docker-compose的内容。</p>
+<a id="more"></a>
+
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><ul>
+<li>登陆docker hub <code>docker login</code>。</li>
+<li>拉取镜像 <code>docker pull</code>。</li>
+<li>给镜像打tag <code>docker tag image-id xxxx:yyy</code>。</li>
+<li>查看image <code>docker image ls</code>。</li>
+<li>查看container <code>docker ps</code>会显示当前正在运行的镜像。ps:有些时候镜像运行完就退出了，可以加上<code>-a</code>参数来找到它。</li>
+<li>杀掉某一正在运行镜像 <code>docker kill xxx</code>。xxx可以是镜像的名称、container Id等等。</li>
+<li>查看镜像的log <code>docker logs 464fced66de3</code>。可以帮助定位出问题的镜像。</li>
+<li>查看本地存储卷 <code>docker volume ls</code>。</li>
+<li>运行镜像 <code>docker run -p localhost-port:image-expose-port -d your-docker-image</code>。<code>-p</code>绑定端口，<code>-d</code>让镜像可以在后台运行，<code>-e</code>增加环境变量。这里还有一堆参数，请看<code>docker run</code>指令。注意，<code>your-docker-image</code>后面还可以增加类似<code>/bin/bash</code>的指令，如果镜像是用Dockerfile打出来的话，这句话会覆盖你的<code>CMD</code>指令。</li>
+<li>镜像打包 <code>docker save 4837420db37e | gzip &gt; 4837420db37e.tgz</code>。</li>
+<li>镜像复原 <code>docker load -i 4837420db37e.tgz</code>。这两个指令可以方便的迁移我们的镜像。</li>
+<li>自动清理 <code>docker [commmand like: volume/container] prune</code>。<code>docker rm $(docker ps -aq)</code>。<code>docker system prune --volumes</code>清除所有不相关或不使用的Docker数据。</li>
+<li>编译镜像 <code>docker build -f your-Dockerfile</code>。</li>
+<li>查看docker的事件。这时，我们需要多开一个shell进入<code>docker events</code>中。在另一个shell中，正常执行我们的指令。你会发现，我们在第一个shell中可以实时显示容器的内部事件了。</li>
+<li>PS:各种命令都可以加上<code>docker xxx --help</code>来快速查看额外参数的作用。</li>
+</ul>
+<p>有时候我们想要运行镜像后，进入此镜像的shell中。这里有三个有用的指令，一个用于镜像启动时，一个用于启动后：</p>
+<ul>
+<li><code>docker run -it your-image</code>适用于运行镜像时。</li>
+<li><code>docker attach container-id</code>用来连接到正在运行中的容器中。</li>
+<li><code>docker exec [OPTIONS] container-id COMMAND [ARG...]</code>用来在运行的镜像中执行相关命令。我们也可以使用<code>docker exec -it container-id /bin/bash</code>来进入一个运行的镜像。</li>
+</ul>
+<h3 id="利用docker-compose部署多个服务"><a href="#利用docker-compose部署多个服务" class="headerlink" title="利用docker-compose部署多个服务"></a>利用docker-compose部署多个服务</h3><p>在需要同时部署多个服务的时，我们当然可以每次运行一个镜像来启动每一个服务。但有时候，如果服务直接存在相互的依赖关系，一个服务未启动会使另一个服务挂掉，就需要<code>docker-compose</code>出马了。我们这里以一个node服务和一个mongo服务为例，且node服务是依赖mongo服务的。</p>
+<h4 id="写一个”compose-file”"><a href="#写一个”compose-file”" class="headerlink" title="写一个”compose-file”"></a>写一个”compose-file”</h4><p>我们需要在合适的目录下，建立一个<code>docker-compose.yml</code>文件。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.7'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"><span class="attr">  mongodb:</span></span><br><span class="line"><span class="attr">    image:</span> <span class="attr">mongo:3.4.3</span></span><br><span class="line"><span class="attr">    container_name:</span> <span class="string">mongodb</span></span><br><span class="line"><span class="attr">    restart:</span> <span class="string">always</span></span><br><span class="line"><span class="attr">    environment:</span></span><br><span class="line"><span class="attr">      MONGO_INITDB_ROOT_USERNAME:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">      MONGO_INITDB_ROOT_PASSWORD:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">      MONGO_INITDB_DATABASE:</span> <span class="string">admin</span></span><br><span class="line"><span class="attr">      MONGO_USERNAME:</span> <span class="string">dbuser</span></span><br><span class="line"><span class="attr">      MONGO_PASSWORD:</span> <span class="string">dbpwd</span></span><br><span class="line"><span class="attr">      MONGO_DATABASE:</span> <span class="string">dbname</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="number">27017</span><span class="string">:27017</span></span><br><span class="line"><span class="attr">    volumes:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro</span></span><br><span class="line"><span class="attr">      - mongo-volume:</span><span class="string">/data/db</span></span><br><span class="line"><span class="attr">  web:</span></span><br><span class="line"><span class="attr">    image:</span> <span class="attr">my-web:latest</span></span><br><span class="line"><span class="attr">    container_name:</span> <span class="string">web</span></span><br><span class="line"><span class="attr">    depends_on:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">"mongodb"</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="number">3000</span><span class="string">:3000</span></span><br><span class="line"><span class="bullet">      -</span> <span class="number">6789</span><span class="string">:6789</span></span><br><span class="line"><span class="attr">    environment:</span></span><br><span class="line"><span class="attr">      PORT:</span> <span class="string">'3000'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line"><span class="attr">  mongo-volume:</span></span><br><span class="line"><span class="attr">    external:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>最外层并行的三个配置项是：</p>
+<ul>
+<li><code>version</code>指的是使用的compose文件的格式版本。目前使用的是<em>3.7</em>。</li>
+<li><code>services</code>需要docker启动的服务。这个对象下的每一项，都是一个会被启动的服务。</li>
+<li><code>volumes</code>需要docker创建的内部文件系统。同理，它的每一项，都将生成一个存储卷。</li>
+</ul>
+<p>ports和expose的区别，前者可以被外部访问，expose暴露的只能在容器内访问<a href="https://stackoverflow.com/questions/40801772/what-is-the-difference-between-docker-compose-ports-vs-expose" target="_blank" rel="noopener">参考</a>。</p>
+<p>其他子配置项的作用可以在<a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">官网</a>中寻找，这里就不赘述了。下面就本次工程，指出几个关键的配置的作用。</p>
+<h4 id="对于mongo"><a href="#对于mongo" class="headerlink" title="对于mongo"></a>对于mongo</h4><p>在建立数据库服务时，我们会考虑下面的问题：</p>
+<ol>
+<li>初始数据如何导入？</li>
+<li>数据如何持久化？</li>
+</ol>
+<p>在查询了官方mongo镜像的<a href="https://github.com/docker-library/mongo/blob/master/3.4/docker-entrypoint.sh#L197" target="_blank" rel="noopener">Dockerfile</a>后，我们可以通过一些环境变量来配置数据库。简单来说，如果环境变量<code>MONGO_INITDB_ROOT_USERNAME</code>和<code>MONGO_INITDB_ROOT_PASSWORD</code>存在，将会创建一个<em>admin</em>数据库和一个root用户，用来进行后续管理。同时，在启动镜像前，mongo将会执行<code>/docker-entrypoint-initdb.d/</code>下的文件，我们通过这个方式，可以完成数据库的初始化。</p>
+<p>对于第二个问题，docker为我们提供了<a href="https://docs.docker.com/storage/volumes/" target="_blank" rel="noopener"><em>volume</em></a>存储卷模式。在上面的配置文件中，我们通过<code>volumes</code>指定了要创建的存储卷mongo-volume。然后我们在服务mongodb下，定义了volumes的使用方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro <span class="comment"># 这里把我们的初始化脚本复制进执行目录。参数:ro的意思是只读。</span></span><br><span class="line">- mongo-volume:/data/db <span class="comment"># 这里挂载了mongodb存储位置</span></span><br></pre></td></tr></table></figure>
+
+<p>下面是初始化脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="string">"<span class="variable">$&#123;mongo[@]&#125;</span>"</span> <span class="string">"<span class="variable">$MONGO_INITDB_DATABASE</span>"</span> &lt;&lt;EOF</span><br><span class="line">  var dbname = db.getSiblingDB(<span class="string">'dbname'</span>);</span><br><span class="line">  var user = <span class="string">"<span class="variable">$MONGO_USERNAME</span>"</span>;</span><br><span class="line">  var passwd = <span class="string">"<span class="variable">$MONGO_PASSWORD</span>"</span>;</span><br><span class="line">  dbname.createUser(&#123;user: user, <span class="built_in">pwd</span>: passwd, roles:[&#123;role: <span class="string">"readWrite"</span>,db: <span class="string">"dbname"</span>&#125;] &#125;);</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>另外推荐一个mongo可视化连接工具<em>Robo 3T</em>来方便操作。</p>
+<h4 id="对于node"><a href="#对于node" class="headerlink" title="对于node"></a>对于node</h4><p>node服务其实比较简单，通过Dockerfile构建好镜像后，暴露出相应的服务端口即可。在这里，<code>depends_on</code>解决了上面提到的依赖问题。此时，docker会先启动被依赖的服务。这里记录一个Dockerfile，当碰到依赖库(imagemin-pngquant)需要主动编译情况下的解决方案：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">10.16</span>-alpine</span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> author=my@my.com</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /home/my-web</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . ./</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> sed -i <span class="string">'s/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g'</span> /etc/apk/repositories</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apk update &amp;&amp; \ </span></span><br><span class="line">  apk <span class="keyword">add</span><span class="bash"> --no-cache git \</span></span><br><span class="line"><span class="bash">    autoconf \</span></span><br><span class="line"><span class="bash">    automake \</span></span><br><span class="line"><span class="bash">    bash \</span></span><br><span class="line"><span class="bash">    g++ \</span></span><br><span class="line"><span class="bash">    libc6-compat \</span></span><br><span class="line"><span class="bash">    libjpeg-turbo-dev \</span></span><br><span class="line"><span class="bash">    libpng-dev \</span></span><br><span class="line"><span class="bash">    make \</span></span><br><span class="line"><span class="bash">    nasm <span class="comment"># 安装这么一大堆东西来编译imagemin-pngquant的依赖</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install  &amp;&amp; \</span></span><br><span class="line"><span class="bash">  npm run build</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"npm"</span>, <span class="string">"run"</span>, <span class="string">"start:prod"</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>需要指出的是，默认情况下，镜像里的localhost不是你本机的localhost啦。我就是忘记了这一点，在调试的过程中浪费了许多时间。docker-compose在启动的时候，会建立一系列的工作，其中之一便是建立一个<a href="https://docs.docker.com/compose/networking/" target="_blank" rel="noopener">虚拟网络</a>。所以我们在node服务中连接数据库时，数据库的host是你的服务名<em>mongo</em>（上面的配置文件中）了。正确的写法应该是:<code>mongodb://dbuser:dbpwd@mongo:27017/dbname</code>。当然，这种网络模式也可以改变，可以参考网络的<em>bridge mode</em>和<em>host mode</em>。</p>
+<h4 id="启动-更新-关闭"><a href="#启动-更新-关闭" class="headerlink" title="启动/更新/关闭"></a>启动/更新/关闭</h4><ul>
+<li><code>docker-compose up -d</code>-启动服务。默认将会在当前目录下寻找配置文件<em>docker-compose.yml</em>。</li>
+<li><code>docker-compose pull web &amp;&amp; docker-compose down &amp;&amp; docker-compose up -d</code>-更新镜像并重启，数据不会丢失。</li>
+<li><code>docker-compose down</code>-关闭并销毁。</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://github.com/fjc0k/docker-YApi" target="_blank" rel="noopener">Docker-YApi</a><br><a href="https://medium.com/faun/managing-mongodb-on-docker-with-docker-compose-26bf8a0bbae3" target="_blank" rel="noopener">Managing MongoDB on docker with docker-compose</a><br><a href="https://stackoverflow.com/questions/35400740/how-to-set-docker-mongo-data-volume" target="_blank" rel="noopener">how to set docker mongo data volume</a></p>
+<!-- [https://stackoverflow.com/questions/39348478/initialize-data-on-dockerized-mongo]
+[https://stackoverflow.com/questions/39282957/mongorestore-in-a-dockerfile]
+[https://stackoverflow.com/questions/38298645/how-should-i-backup-restore-docker-named-volumes]
+[https://stackoverflow.com/questions/42912755/how-to-create-a-db-for-mongodb-container-on-start-up/42917632#42917632] -->
+
+
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>到了最后，发现这篇就是一个大杂烩，也不知道再看还有没有效果～～</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+            <a href="/tags/docker-compose/" rel="tag"># docker-compose</a>
+          
+            <a href="/tags/mongo/" rel="tag"># mongo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/07/mix-blend-mode/" rel="next" title="CSS中的mix-blend-mode">
+                <i class="fa fa-chevron-left"></i> CSS中的mix-blend-mode
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/post-images/avatar.png" alt="shen">
+            
+              <p class="site-author-name" itemprop="name">shen</p>
+              <div class="site-description motion-element" itemprop="description">Daily problem & solution</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:shenyu.wang64@gmail.com" title="E-Mail &rarr; mailto:shenyu.wang64@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用docker-compose部署多个服务"><span class="nav-number">2.</span> <span class="nav-text">利用docker-compose部署多个服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#写一个”compose-file”"><span class="nav-number">2.1.</span> <span class="nav-text">写一个”compose-file”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对于mongo"><span class="nav-number">2.2.</span> <span class="nav-text">对于mongo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对于node"><span class="nav-number">2.3.</span> <span class="nav-text">对于node</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动-更新-关闭"><span class="nav-number">2.4.</span> <span class="nav-text">启动/更新/关闭</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">shen</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">底漏了</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
