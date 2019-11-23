@@ -79,7 +79,7 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/wsy5555621/wsy5555621.github.io.git
+  repo: https://github.com/xuanshuang/xuanshuang.github.io.git
   branch: master
-  name: wsy5555621
+  name: xuanshuang
   message: blog publish
